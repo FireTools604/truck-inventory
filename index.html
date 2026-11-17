@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Truck Inventory – Scanner Proof of Concept</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --panel:#fff; --ink:#1b1f24; --muted:#5f6b7a; --line:#d9dee5;
+    --red:#b3261e; --red-soft:#fbe9e7; --green:#1e7a3c; --green-soft:#e6f4ea;
+    --amber:#8a5a00; --amber-soft:#fff4dc; --dark:#20262e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:var(--dark);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:600;letter-spacing:.2px}
+  header .sub{font-size:13px;color:#b8c1cc}
+  main{max-width:900px;margin:0 auto;padding:16px;display:grid;gap:14px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 10px;font-weight:600}
+
+  /* status + capture */
+  #status{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;font-weight:600;font-size:17px;cursor:pointer;user-select:none;border:2px solid transparent}
+  #status.ready{background:var(--green-soft);color:var(--green);border-color:#b7dfc3}
+  #status.paused{background:var(--amber-soft);color:var(--amber);border-color:#f0d495}
+  #status .dot{width:14px;height:14px;border-radius:50%;background:currentColor;flex:none}
+  #status.ready .dot{animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  #status small{display:block;font-weight:400;font-size:13px;opacity:.85}
+  #capture{position:absolute;left:-9999px;top:0;width:10px;opacity:0}
+
+  /* last scan */
+  #last{min-height:120px}
+  #lastData{font:600 28px/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all;margin:4px 0 10px}
+  #lastData.empty{color:var(--muted);font:400 16px system-ui,sans-serif}
+  .flash{animation:flash .6s ease-out}
+  @keyframes flash{from{background:#d7f0de}to{background:var(--panel)}}
+  .stats{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:13px;padding:4px 10px;border-radius:999px;background:#eef1f5;color:#344150}
+  .chip.good{background:var(--green-soft);color:var(--green)}
+  .chip.warn{background:var(--amber-soft);color:var(--amber)}
+  #parsed{margin-top:12px;display:none;border-top:1px solid var(--line);padding-top:12px}
+  #parsed table{border-collapse:collapse;font-size:15px}
+  #parsed td{padding:3px 14px 3px 0}
+  #parsed td:first-child{color:var(--muted)}
+
+  /* log */
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  button{font:600 15px system-ui,sans-serif;padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-height:44px}
+  button:active{background:#eef1f5}
+  button.danger{color:var(--red);border-color:#f1c7c3}
+  table.log{width:100%;border-collapse:collapse;font-size:14px}
+  table.log th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--line);padding:6px 8px}
+  table.log td{border-bottom:1px solid #edf0f3;padding:7px 8px;vertical-align:top}
+  table.log td.data{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  #emptyLog{color:var(--muted);font-size:14px;padding:6px 0}
+
+  /* settings + debug */
+  label.opt{display:flex;gap:10px;align-items:flex-start;margin:8px 0;font-size:15px}
+  label.opt input{width:20px;height:20px;margin-top:1px;flex:none}
+  label.opt span small{display:block;color:var(--muted);font-size:13px}
+  details summary{cursor:pointer;font-weight:600;font-size:15px;padding:4px 0}
+  #events{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#1b1f24;color:#d6dde6;border-radius:8px;padding:10px;max-height:260px;overflow:auto;white-space:pre-wrap;margin-top:8px}
+  .manual{display:flex;gap:8px;margin-top:8px}
+  .manual input{flex:1;font:16px ui-monospace,monospace;padding:10px;border:1px solid var(--line);border-radius:8px;min-height:44px}
+  .help{font-size:14px;color:#344150}
+  .help ol{margin:6px 0 0 18px;padding:0}
+  .help li{margin:4px 0}
+  #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Truck Inventory – Scanner Test</h1>
+    <div class="sub">Proof of concept: Zebra ET40/ET45 scanner → web app</div>
+  </div>
+  <div class="sub" id="ua"></div>
+</header>
+
+<main>
+  <div id="status" class="paused" role="button" tabindex="0">
+    <div class="dot"></div>
+    <div><span id="statusText">Tap here to start listening</span><small id="statusSub">The page needs focus before the scanner can type into it.</small></div>
+  </div>
+  <input id="capture" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="none" aria-label="Scanner input">
+
+  <section class="panel" id="last">
+    <h2>Last scan</h2>
+    <div id="lastData" class="empty">Nothing scanned yet. Point the tablet at any barcode or QR code and press the scan button.</div>
+    <div class="stats" id="lastStats"></div>
+    <div id="parsed"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Scan log</h2>
+    <div class="row">
+      <button id="copyBtn">Copy log</button>
+      <button id="clearBtn" class="danger">Clear log</button>
+    </div>
+    <div id="emptyLog">No scans logged.</div>
+    <table class="log" id="logTable" hidden>
+      <thead><tr><th>#</th><th>Time</th><th>Data</th><th>Len</th><th>End</th></tr></thead>
+      <tbody id="logBody"></tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>Settings</h2>
+    <label class="opt"><input type="checkbox" id="optHideKb" checked>
+      <span>Hide on-screen keyboard while listening<small>Turn off if scans don't arrive. Some setups need a normal keyboard connection to receive scanner data.</small></span></label>
+    <label class="opt"><input type="checkbox" id="optBeep" checked>
+      <span>Beep on scan</span></label>
+    <label class="opt"><input type="checkbox" id="optAutofocus" checked>
+      <span>Keep focus on the scanner field<small>Pulls focus back automatically if something else takes it.</small></span></label>
+
+    <details style="margin-top:10px">
+      <summary>Manual entry (test the page without a scanner)</summary>
+      <div class="manual">
+        <input id="manualInput" type="text" placeholder="e.g. AFD-E1-C03" autocomplete="off" autocapitalize="characters">
+        <button id="manualBtn">Log</button>
+      </div>
+    </details>
+
+    <details style="margin-top:6px">
+      <summary>Raw input events (for troubleshooting)</summary>
+      <div id="events">Waiting for input…</div>
+    </details>
+  </section>
+
+  <section class="panel help">
+    <h2>If nothing shows up</h2>
+    <ol>
+      <li>Check the status bar above is green. If not, tap it.</li>
+      <li>Open the <b>DWDemo</b> app on the tablet and scan. If DWDemo reads the barcode, the scanner works and the problem is the browser profile.</li>
+      <li>Open the <b>DataWedge</b> app → <b>Profile0</b>. Check the profile is enabled, Barcode input is on, and <b>Keystroke output</b> is enabled. If Chrome has its own profile, check that one instead.</li>
+      <li>If data arrives but in pieces or with dropped characters, untick "Hide on-screen keyboard" above, or raise the inter-character delay in Keystroke output.</li>
+      <li>If DataWedge is locked or Profile0 is disabled, it's an admin/MDM setting and the device owner will need to change it.</li>
+    </ol>
+  </section>
+</main>
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var IDLE_MS = 250;           // commit a scan if no Enter/Tab arrives within this gap
+  var STORE_KEY = "afd-scan-poc-log";
+
+  var cap = document.getElementById("capture");
+  var statusEl = document.getElementById("status");
+  var statusText = document.getElementById("statusText");
+  var statusSub = document.getElementById("statusSub");
+  var lastData = document.getElementById("lastData");
+  var lastStats = document.getElementById("lastStats");
+  var parsedEl = document.getElementById("parsed");
+  var lastPanel = document.getElementById("last");
+  var logBody = document.getElementById("logBody");
+  var logTable = document.getElementById("logTable");
+  var emptyLog = document.getElementById("emptyLog");
+  var eventsEl = document.getElementById("events");
+  var optHideKb = document.getElementById("optHideKb");
+  var optBeep = document.getElementById("optBeep");
+  var optAutofocus = document.getElementById("optAutofocus");
+
+  document.getElementById("ua").textContent = (navigator.userAgent.match(/Android [\d.]+/)||[""])[0];
+
+  // ---------- storage ----------
+  var log = [];
+  try { log = JSON.parse(localStorage.getItem(STORE_KEY) || "[]") || []; } catch(e){ log = []; }
+  function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(log.slice(-200))); } catch(e){} }
+
+  // ---------- raw event trace ----------
+  var traceLines = [];
+  var t0 = performance.now();
+  function trace(s){
+    var t = (performance.now()-t0).toFixed(0).padStart(7," ");
+    traceLines.push(t+"ms  "+s);
+    if (traceLines.length > 80) traceLines.shift();
+    eventsEl.textContent = traceLines.join("\n");
+    eventsEl.scrollTop = eventsEl.scrollHeight;
+  }
+
+  // ---------- focus handling ----------
+  function setStatus(ok){
+    statusEl.className = ok ? "ready" : "paused";
+    statusText.textContent = ok ? "Listening for scans" : "Paused – tap here to resume";
+    statusSub.textContent = ok ? "Press the scan button on the tablet." : "The page lost focus, so scanner input won't arrive.";
+  }
+  function grab(){
+    cap.setAttribute("inputmode", optHideKb.checked ? "none" : "text");
+    try { cap.focus({preventScroll:true}); } catch(e){ cap.focus(); }
+  }
+  cap.addEventListener("focus", function(){ setStatus(true); trace("focus"); });
+  cap.addEventListener("blur", function(){
+    setStatus(false); trace("blur");
+    if (optAutofocus.checked) setTimeout(function(){
+      var a = document.activeElement;
+      var busy = a && (a.tagName === "INPUT" || a.tagName === "BUTTON" || a.tagName === "SUMMARY") && a !== cap;
+      if (!busy && document.visibilityState === "visible") grab();
+    }, 300);
+  });
+  statusEl.addEventListener("click", grab);
+  statusEl.addEventListener("keydown", function(e){ if (e.key==="Enter"||e.key===" ") { e.preventDefault(); grab(); } });
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState==="visible" && optAutofocus.checked) grab(); });
+  optHideKb.addEventListener("change", function(){ cap.blur(); setTimeout(grab, 50); });
+
+  // ---------- scan assembly ----------
+  var firstAt = 0, lastAt = 0, inputCount = 0, idleTimer = null;
+
+  function commit(terminator){
+    clearTimeout(idleTimer); idleTimer = null;
+    var raw = cap.value;
+    cap.value = "";
+    var data = raw.replace(/[\r\n\t]+$/,"");
+    if (!data) { trace("commit skipped (empty)"); return; }
+    var dur = lastAt && firstAt ? Math.round(lastAt - firstAt) : 0;
+    var rec = {
+      n: (log.length ? log[log.length-1].n : 0) + 1,
+      t: new Date().toISOString(),
+      data: data,
+      len: data.length,
+      end: terminator,
+      ms: dur,
+      events: inputCount
+    };
+    firstAt = lastAt = 0; inputCount = 0;
+    trace("COMMIT ["+terminator+"] \""+data+"\" len="+data.length+" "+dur+"ms");
+    log.push(rec); save();
+    showLast(rec); renderLog(); beep();
+  }
+
+  cap.addEventListener("keydown", function(e){
+    trace("keydown key="+JSON.stringify(e.key)+" code="+(e.code||"-")+" keyCode="+e.keyCode);
+    if (e.key === "Enter" || e.keyCode === 13) { e.preventDefault(); commit("Enter"); }
+    else if (e.key === "Tab" || e.keyCode === 9) { e.preventDefault(); commit("Tab"); }
+  });
+
+  cap.addEventListener("input", function(e){
+    var now = performance.now();
+    if (!firstAt) firstAt = now;
+    lastAt = now; inputCount++;
+    trace("input type="+(e.inputType||"-")+" data="+JSON.stringify(e.data)+" value.len="+cap.value.length);
+    // Some configs deliver Enter as a character in the string
+    if (/[\r\n]/.test(cap.value)) { commit("Enter (in data)"); return; }
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function(){ commit("none (timeout)"); }, IDLE_MS);
+  });
+
+  // ---------- display ----------
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  function parse(data){
+    // Proposed label format: DEPT-UNIT-C## e.g. AFD-E1-C03
+    var m = data.match(/^([A-Z0-9]+)-([A-Z0-9]+)-C(\d{1,3})$/i);
+    if (m) return [["Format","Cabinet label"],["Department",m[1].toUpperCase()],["Apparatus",m[2].toUpperCase()],["Cabinet",String(parseInt(m[3],10))]];
+    // JSON payload
+    if (/^\s*\{/.test(data)) { try { var o = JSON.parse(data); return [["Format","JSON"]].concat(Object.keys(o).map(function(k){ return [k, typeof o[k]==="object"?JSON.stringify(o[k]):o[k]]; })); } catch(e){} }
+    // key=value;key=value or key:value|key:value
+    if (/[=:]/.test(data) && /[;|&]/.test(data)) {
+      var pairs = data.split(/[;|&]/).map(function(p){ var i = p.search(/[=:]/); return i>0 ? [p.slice(0,i).trim(), p.slice(i+1).trim()] : null; }).filter(Boolean);
+      if (pairs.length) return [["Format","Key/value"]].concat(pairs);
+    }
+    if (/^https?:\/\//i.test(data)) return [["Format","URL"],["Link",data]];
+    if (/^\d{12,13}$/.test(data)) return [["Format","Retail product code (UPC/EAN)"]];
+    return null;
+  }
+
+  function showLast(r){
+    lastData.className = "";
+    lastData.textContent = r.data;
+    var endCls = /Enter|Tab/.test(r.end) ? "good" : "warn";
+    lastStats.innerHTML =
+      '<span class="chip">'+r.len+' characters</span>'+
+      '<span class="chip '+endCls+'">Ended with: '+esc(r.end)+'</span>'+
+      '<span class="chip">'+r.ms+' ms to arrive</span>'+
+      '<span class="chip">'+r.events+' input events</span>';
+    var p = parse(r.data);
+    if (p) {
+      parsedEl.style.display = "block";
+      parsedEl.innerHTML = "<table>"+p.map(function(kv){ return "<tr><td>"+esc(kv[0])+"</td><td><b>"+esc(kv[1])+"</b></td></tr>"; }).join("")+"</table>";
+    } else { parsedEl.style.display = "none"; parsedEl.innerHTML = ""; }
+    lastPanel.classList.remove("flash"); void lastPanel.offsetWidth; lastPanel.classList.add("flash");
+  }
+
+  function renderLog(){
+    if (!log.length){ logTable.hidden = true; emptyLog.hidden = false; logBody.innerHTML = ""; return; }
+    logTable.hidden = false; emptyLog.hidden = true;
+    logBody.innerHTML = log.slice().reverse().slice(0,100).map(function(r){
+      var d = new Date(r.t);
+      var time = d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
+      return "<tr><td>"+r.n+"</td><td>"+time+"</td><td class='data'>"+esc(r.data)+"</td><td>"+r.len+"</td><td>"+esc(r.end)+"</td></tr>";
+    }).join("");
+  }
+
+  // ---------- beep ----------
+  var actx = null;
+  function beep(){
+    if (!optBeep.checked) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = "square"; o.frequency.value = 1800;
+      g.gain.setValueAtTime(0.08, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.09);
+      o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.1);
+    } catch(e){}
+  }
+
+  // ---------- buttons ----------
+  var toastEl = document.getElementById("toast"), toastT;
+  function toast(msg){ toastEl.textContent = msg; toastEl.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800); }
+
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var txt = "n\ttime\tdata\tlength\tterminator\tms\n" + log.map(function(r){ return [r.n,r.t,r.data,r.len,r.end,r.ms].join("\t"); }).join("\n");
+    var done = function(){ toast("Log copied"); grab(); };
+    try { navigator.clipboard.writeText(txt).then(done, function(){ toast("Copy blocked by browser"); grab(); }); }
+    catch(e){ toast("Copy blocked by browser"); grab(); }
+  });
+
+  var clearArmed = false;
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    if (!clearArmed){ clearArmed = true; this.textContent = "Tap again to clear"; var b=this; setTimeout(function(){ clearArmed=false; b.textContent="Clear log"; }, 3000); return; }
+    clearArmed = false; this.textContent = "Clear log";
+    log = []; save(); renderLog();
+    lastData.className = "empty"; lastData.textContent = "Log cleared."; lastStats.innerHTML = ""; parsedEl.style.display = "none";
+    grab();
+  });
+
+  var manualInput = document.getElementById("manualInput");
+  function manualLog(){
+    var v = manualInput.value.trim(); if (!v) return;
+    var rec = { n:(log.length?log[log.length-1].n:0)+1, t:new Date().toISOString(), data:v, len:v.length, end:"manual", ms:0, events:0 };
+    log.push(rec); save(); showLast(rec); renderLog(); manualInput.value = "";
+  }
+  document.getElementById("manualBtn").addEventListener("click", manualLog);
+  manualInput.addEventListener("keydown", function(e){ if (e.key==="Enter"){ e.preventDefault(); manualLog(); } });
+
+  // ---------- start ----------
+  renderLog();
+  if (log.length) showLast(log[log.length-1]), lastPanel.classList.remove("flash");
+  setStatus(false);
+  setTimeout(grab, 200);
+})();
+</script>
+</body>
+</html>
