@@ -2,7 +2,7 @@
 
 Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department. Owner: Allan Dicks, Captain – Equipment.
 
-`docs/SPEC.md` is the source of truth. Read it before changing anything. Where `docs/flow-map-original.pdf` differs from the spec, the spec wins.
+`docs/SPEC.md` is the source of truth. Read it before changing anything.
 
 ## Hard constraints
 

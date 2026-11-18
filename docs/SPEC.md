@@ -30,16 +30,13 @@ localStorage belongs to one browser on one tablet. Clearing Chrome's site data w
 
 ## Check workflow
 
-One crew member, one tablet, one apparatus per check. Where this differs from the hand-drawn flow map (`docs/flow-map-original.pdf`), this version wins.
+One crew member, one tablet, one apparatus per check: pick the truck, scan each cabinet, work its checklist, then close the truck out. Finish and review sits on the scanner screen.
 
 ```
 Start check (pick apparatus, name, FF#)
-  -> Scanner screen (scan a cabinet label)
-       -> label from this truck      -> Cabinet screen -> Cabinet complete
-                                          -> all cabinets done? no  -> back to Scanner screen
-                                          -> all cabinets done? yes -> Truck summary -> Complete check -> Saved to log
-       -> label from another truck   -> Wrong truck warning, acknowledge -> back to Scanner screen
-       -> label not in master list   -> Unknown label warning            -> back to Scanner screen
+  -> Scanner screen (cabinet list and status)
+       -> scan cabinet -> Cabinet screen -> confirm cabinet complete -> back to Scanner screen
+       -> Finish and review -> Truck summary (outstanding, extra, low stock) -> Complete -> Saved to log
 ```
 
 ## Screens
@@ -47,7 +44,7 @@ Start check (pick apparatus, name, FF#)
 | Screen | What it does | What's on it |
 | --- | --- | --- |
 | Start | Opens a new check | Apparatus buttons (E1, E1-2, R1, S1, T1). Name, FF#, other check details. Date and time filled in automatically. |
-| Scanner | Home base for the check | "Scan a cabinet" prompt. List of that apparatus's cabinets showing not started, in progress or done. Manual cabinet pick if a label won't scan. Finish truck button. |
+| Scanner | Home base for the check | "Scan a cabinet" prompt. List of that apparatus's cabinets showing not started, in progress or done. Manual cabinet pick if a label won't scan. Finish and review button. |
 | Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Bottom two thirds: the checklist. Add extra item button. Cabinet complete button. |
 | Truck summary | Review before closing the check | Outstanding items, extra items and low stock, grouped by cabinet. Complete check button. |
 | Log | Past checks on this tablet | Checks listed newest first. Export CSV button. |
@@ -79,9 +76,7 @@ Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in th
 
 - A hidden text field keeps focus so DataWedge can type into it. The on-screen keyboard stays hidden (`inputmode="none"`).
 - A scan is complete on Enter or Tab, or after a short pause (about 250 ms) if DataWedge sends neither. `scan-test.html` / the current `index.html` already does this.
-- Cabinet on this apparatus: open the cabinet screen.
-- Cabinet on a different apparatus: "Wrong truck" warning. The crew member acknowledges it and stays on the scanner screen.
-- ID not in the master list: "Unknown label" warning showing the scanned text.
+- Scanning a cabinet label opens that cabinet's screen.
 - Scan while on a cabinet screen: if it's the same cabinet, nothing happens. If it's a different cabinet, ask before leaving the current one.
 
 ## Data model
@@ -129,7 +124,7 @@ Each phase is tested on the tablet before the next one starts.
 
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
 1. **Click-through prototype.** All five screens working with sample data for E1 (three or four cabinets, placeholder photos). Cabinets picked by hand. *Done when:* a full check runs from Start to Log and the CSV exports.
-2. **Scanning in the flow.** Print test QR labels for the sample cabinets. Add scan handling, wrong-truck and unknown-label warnings. *Done when:* a check on E1 is completed by scanning labels only.
+2. **Scanning in the flow.** Print test QR labels for the sample cabinets. Add scan handling. *Done when:* a check on E1 is completed by scanning labels only.
 3. **Real data for one apparatus.** Load E1's actual contents, sub-checks and photos. Fit permanent labels. *Done when:* one real duty-weekend check is completed and crew feedback is collected.
 4. **Remaining apparatus.** E1-2, R1, S1, T1: master list, photos and labels for each.
 

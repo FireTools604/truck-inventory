@@ -5,7 +5,6 @@ Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department, run on
 Live page: https://firetools604.github.io/truck-inventory/
 
 - Spec: [`docs/SPEC.md`](docs/SPEC.md)
-- Original hand-drawn flow map: [`docs/flow-map-original.pdf`](docs/flow-map-original.pdf) (the spec wins where they differ)
 - Instructions for coding sessions: [`CLAUDE.md`](CLAUDE.md)
 
 ## Status
