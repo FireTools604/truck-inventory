@@ -14,8 +14,8 @@ Live page: https://firetools604.github.io/truck-inventory/
 | --- | --- |
 | 0. Scanner test | Done 17 Nov 2026 |
 | 1. Click-through prototype, sample data for S1 | Done 18 Nov 2026 |
-| 2. Test data sized to the real truck | Test data in 18 Nov 2026. Tablet test pending |
-| 3. UI refinement | |
+| 2. Test data sized to the real truck | Done 18 Nov 2026 |
+| 3. UI refinement | Next |
 | 4. Scanning in the flow, test QR labels | |
 | 5. Ready for real data: template, photo rules, clear test checks, crew trial | |
 | 6. Real data for S1 after the retrofit, first duty-weekend check | |
