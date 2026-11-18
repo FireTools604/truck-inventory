@@ -70,8 +70,8 @@ Start check (pick apparatus, name, FF#)
 
 Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in the master list, so the label never needs to change when the cabinet's contents do.
 
-- **ID format (proposed):** `AFD-<apparatus>-<cabinet>`, for example `AFD-E1-D2` or `AFD-E1-2-P1`. The app matches the whole string, so the hyphen in E1-2 is not a problem.
-- **Cabinet codes (proposed):** D1, D2… driver side front to back; P1, P2… passenger side front to back; B1 for rear compartments.
+- **ID format (proposed):** `AFD-<apparatus>-<cabinet>`, for example `AFD-E1-L2` or `AFD-E1-2-R1`. The app matches the whole string, so the hyphen in E1-2 is not a problem.
+- **Cabinet codes:** the department's existing compartment calls. L1, L2… driver side, front to back (L1 = driver side front); R1, R2… passenger side, front to back.
 - **QR over 1D barcode:** reads at any angle, holds the full ID, and stays readable when partly worn.
 - **Once a label is on a truck, its ID doesn't change.** If a cabinet's contents change, update the master list, not the label.
 
@@ -93,7 +93,7 @@ The master list (what should be on each truck) is a JSON file in the repo, `data
 | Record | Fields |
 | --- | --- |
 | Apparatus | ID (E1), name, list of cabinets |
-| Cabinet | Label ID (`AFD-E1-D2`), apparatus, display name ("Driver side 2"), photos in swipe order, list of items |
+| Cabinet | Label ID (`AFD-E1-L2`), apparatus, display name ("Driver side 2"), photos in swipe order, list of items |
 | Item | ID, name, expected quantity, consumable yes/no (allows Low), list of sub-checks |
 | Sub-check | ID, label ("Bar oil level") |
 
@@ -114,9 +114,9 @@ Same approach as the SCBA log: completed checks are kept on the tablet and expor
 
 ```csv
 check_id,date,apparatus,name,ff_number,cabinet,item,expected_qty,status,failed_subchecks,note
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-D2,Chainsaw,1,Present,Chain tension,Chain loose
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-D2,Floor dry,2,Low,,One bag left
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-D2,Pry bar,,Extra,,Not on list
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Chainsaw,1,Present,Chain tension,Chain loose
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Floor dry,2,Low,,One bag left
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Pry bar,,Extra,,Not on list
 ```
 
 - Export CSV on the Log screen downloads the file to the tablet's Downloads folder.
@@ -146,7 +146,7 @@ Each phase is tested on the tablet before the next one starts.
 ## Open items
 
 - [ ] Final contents for each apparatus and cabinet (the master list)
-- [ ] Cabinet code convention: accept or change the D / P / B proposal
+- [ ] Codes for any rear or top compartments (L and R cover the sides)
 - [ ] Other check details on the Start screen, beyond name and FF#
 - [ ] Add a Damaged / needs repair status, or leave that to notes and failed sub-checks?
 - [ ] Can a truck be completed with cabinets unchecked? If so, how are they shown in the summary?
