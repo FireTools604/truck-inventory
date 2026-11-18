@@ -1,4 +1,4 @@
-/* Truck Inventory Check – AFD. Phase 1 click-through prototype. */
+/* Truck Inventory Check – AFD. Proof of concept. */
 :root{
   --bg:#f4f5f7; --panel:#fff; --ink:#1b1f24; --muted:#5f6b7a; --line:#d9dee5;
   --red:#b3261e; --red-soft:#fbe9e7; --green:#1e7a3c; --green-soft:#e6f4ea;
@@ -96,7 +96,6 @@ button.wide{width:100%}
 .item-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
 .item-name{font-weight:600;font-size:18px}
 .item-qty{font-size:15px;color:var(--muted);white-space:nowrap}
-.item-tag{font-size:12px;color:var(--muted);font-weight:400;margin-left:6px}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
 .seg button{flex:1;min-width:90px;min-height:52px}
 .seg button.note-btn{flex:0 0 auto;min-width:76px;font-weight:500;color:#344150}
@@ -110,15 +109,31 @@ button.wide{width:100%}
 .sub.todo > span{color:var(--amber);font-weight:600}
 .sub .seg{flex:0 0 auto}
 .sub .seg button{min-width:80px;min-height:48px}
-textarea.note{display:block;width:100%;margin-top:10px;font:16px system-ui,sans-serif;padding:8px 10px;border:1px solid var(--line);border-radius:8px;resize:vertical;min-height:48px}
+.seg.level button{min-width:0}
+.subs-done{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;display:flex;align-items:center;gap:10px}
+.subs-done > span{flex:1;font-size:16px;font-weight:600;color:var(--green)}
+.subs-done.has-fail > span{color:var(--red)}
+.subs-done button{flex:none;min-width:90px}
+.subs-hide{justify-self:start;font-size:15px}
 
-.extras{background:var(--panel);border:1px dashed #aab4bf;border-radius:10px;padding:12px 14px;display:grid;gap:10px}
-.extras h3{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
-.extra{display:flex;align-items:center;gap:10px;border-bottom:1px solid #edf0f3;padding-bottom:8px}
-.extra > div{flex:1}
-.extra small{display:block;color:var(--muted);font-size:14px}
-.extra-form{display:grid;gap:0}
-.extra-form .row2{grid-template-columns:1fr 110px}
+/* count items */
+.count-row{display:flex;gap:8px;align-items:stretch}
+.count-row .step{flex:none;width:56px;padding:0;font-size:28px;line-height:1}
+.count-in{flex:none;width:92px;min-height:52px;font:600 22px system-ui,sans-serif;text-align:center;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:0 4px;-moz-appearance:textfield;appearance:textfield}
+.count-in::-webkit-outer-spin-button,.count-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.count-in:focus{outline:2px solid var(--blue);outline-offset:0}
+.count-in.st-Present{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+.count-in.st-Low{background:var(--amber-soft);border-color:#c98a00;color:var(--amber)}
+.count-in.st-Missing{background:var(--red-soft);border-color:var(--red);color:var(--red)}
+.count-row .full-btn{flex:1;min-width:0}
+.count-row .full-btn.on{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+.count-row .note-btn{flex:none;min-width:76px;font-weight:500;color:#344150}
+.count-row .note-btn.has{background:var(--blue-soft);border-color:#c5d5ec;color:var(--blue)}
+.stock{font-size:15px;font-weight:600;margin-top:8px}
+.stock:empty{display:none}
+.stock.st-Low{color:var(--amber)}
+.stock.st-Missing{color:var(--red)}
+textarea.note{display:block;width:100%;margin-top:10px;font:16px system-ui,sans-serif;padding:8px 10px;border:1px solid var(--line);border-radius:8px;resize:vertical;min-height:48px}
 
 /* ---------- summary ---------- */
 .sum h2 .n{float:right;font-size:13px}
