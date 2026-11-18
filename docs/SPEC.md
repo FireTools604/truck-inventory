@@ -30,7 +30,7 @@ localStorage belongs to one browser on one tablet. Clearing Chrome's site data w
 
 ## Check workflow
 
-One crew member, one tablet, one apparatus per check. Where this differs from the hand-drawn flow map (`docs/flow-map-original.pdf`), this version wins.
+One crew member, one tablet, one apparatus per check: pick the truck, scan each cabinet, work its checklist, then close the truck out.
 
 ```
 Start check (pick apparatus, name, FF#)
