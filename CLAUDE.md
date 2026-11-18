@@ -27,5 +27,6 @@ Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department. Owner:
 - Plain, concise, operational wording in the UI and docs.
 - Ask before adding libraries, a backend or a new data store.
 - Flag anything that would need access to the tablet's settings.
+- Every change to `js/app.js` or `css/app.css`: bump `APP_VERSION` in `js/app.js` and the `?v=` on both tags in `index.html` to the same value (date plus a letter, e.g. `2026-11-18b`). Put the new version in the PR description. Without it the tablet can run cached old code on new data.
 - When the spec changes, update `docs/SPEC.md` in the same change.
 - Decisions made in a chat go into `docs/SPEC.md` before the chat ends. New chats only see what's in the repo on `main`.

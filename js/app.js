@@ -3,6 +3,10 @@
 (function(){
   "use strict";
 
+  // Bump on every change to app code, together with the ?v= on both tags in index.html,
+  // so the tablet loads the new files instead of cached ones.
+  var APP_VERSION = "2026-11-18b";
+
   // ?data=full loads the full-size test data (8 cabinets). Default is the short set for quick runs.
   var DATA_URL = /[?&]data=full(&|$)/.test(location.search) ? "data/trucks-full.json" : "data/trucks.json";
   var KEY_ACTIVE = "afd-truck-check-active";   // check in progress
@@ -212,6 +216,7 @@
 
     h += '<button class="wide" data-act="to-log">Check log (' + log.length + ")</button>";
     if (master.note) h += '<p class="hint">' + esc(master.note) + "</p>";
+    h += '<p class="hint">App version ' + esc(APP_VERSION) + (master.version ? " · data " + esc(master.version) : "") + "</p>";
     h += "</div></div>";
     app.innerHTML = h;
 

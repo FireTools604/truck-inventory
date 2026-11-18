@@ -43,7 +43,11 @@ Two test sets. Cabinets are picked by hand until phase 4.
 | https://firetools604.github.io/truck-inventory/ | Short set: 4 cabinets, 14 items. For quick runs |
 | https://firetools604.github.io/truck-inventory/?data=full | Full-size set: 8 cabinets, 62 items. Run once per batch to check nothing breaks at full size |
 
-A check keeps the list it started with. After an update, discard any check in progress before testing.
+After an update is merged:
+
+1. Wait a few minutes for GitHub Pages to publish, then reload the page.
+2. Check **App version** at the bottom of the Start screen matches the version in the pull request. If it doesn't, wait a few more minutes and reload again.
+3. Discard any check in progress. A check keeps the list it started with.
 
 **Quick run (short set)**
 
