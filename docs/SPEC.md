@@ -45,16 +45,21 @@ Start check (pick apparatus, name, FF#)
 | --- | --- | --- |
 | Start | Opens a new check | Apparatus buttons (E1, E1-2, R1, S1, T1). Name and FF#. Date and time filled in automatically. |
 | Scanner | Home base for the check | "Scan a cabinet" prompt. List of that apparatus's cabinets showing not started, in progress or done. Manual cabinet pick if a label won't scan. Finish and review button, available any time. |
-| Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Bottom two thirds: the checklist. Add extra item button. Cabinet complete button. |
-| Truck summary | Review before closing the check | Not checked cabinets at the top, then outstanding items, extra items and low stock, grouped by cabinet. Complete check button. |
+| Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Bottom two thirds: the checklist. Cabinet complete button. |
+| Truck summary | Review before closing the check | Not checked cabinets at the top, then outstanding items and low stock, grouped by cabinet. Complete check button. |
 | Log | Past checks on this tablet | Checks listed newest first. Export CSV button. |
 
 **Cabinet checklist.** Every item that belongs in the cabinet is listed with its expected quantity.
 
-- Each item is marked **Present** or **Missing**. Consumables (floor dry, water bottles) can also be marked **Low**.
+- Each item is marked **Present** or **Missing**.
+- **Consumables** are one of two types. Status is set from what the crew enters; nobody picks Low by hand.
+  - **Count** (water bottles, floor dry): the crew enters how many are there, with − and + buttons, by typing, or "All" for a full count. Each item has a full quantity and a minimum. Below the minimum is **Low**. Zero is **Missing**.
+  - **Level** (fuel, bar oil): the crew picks 25%, 50%, 75% or 100%, or Missing. Each item has a restock point. At or below it is **Low**. Placeholder restock point is 50% until real items are set.
+  - The minimums and restock points in the test data are placeholders.
 - Items that need a detailed check expand into a sub-list. Example: chainsaw → bar oil level, fuel level, chain tension. Each sub-check is marked pass or fail. An item marked Present or Low isn't checked until all its sub-checks are marked. Missing items skip their sub-checks.
+- Once every sub-check is marked, the list collapses to one line ("All 6 sub-checks passed" or "1 of 6 sub-checks failed: Chain tension"). **Show** opens it again to make a change; **Hide sub-checks** closes it.
 - Any item can take a short note.
-- **Add extra item** records something found in the cabinet that isn't on its list.
+- **Add extra item** is off for now (decided 18 Nov 2026). It may come back. Older checks that recorded extras still show and export them.
 - Cabinet complete is allowed once every item has a status. Unchecked items stay highlighted until then.
 - A cabinet can be reopened after it's complete. If a change leaves an item unchecked, the cabinet goes back to in progress.
 - **Kits** (the med kit) are one item with a "Check expiries" sub-check for now. A kit page of its own comes later (see Not in this build).
@@ -63,8 +68,8 @@ Start check (pick apparatus, name, FF#)
 
 - **Not checked:** cabinets not marked complete, shown at the top as "Not started" or "In progress, x of y items". The check can still be completed.
 - **Outstanding:** missing items and failed sub-checks.
-- **Extra:** items added on the cabinet screen.
-- **Low stock:** consumables marked Low.
+- **Low stock:** count items below their minimum, level items at or below their restock point.
+- **Extra:** only shown for older checks that recorded extra items.
 
 ## Cabinet labels and scanning
 
@@ -92,7 +97,7 @@ The master list (what should be on each truck) is a JSON file in the repo, `data
 | --- | --- |
 | Apparatus | ID (E1), name, list of cabinets |
 | Cabinet | Label ID (`AFD-E1-L2`), apparatus, display name ("Driver side 2"), photos in swipe order, list of items |
-| Item | ID, name, expected quantity, consumable yes/no (allows Low), list of sub-checks |
+| Item | ID, name, type (plain, count or level), expected quantity (full quantity for count items), minimum (count items), restock point in % (level items), list of sub-checks |
 | Sub-check | ID, label ("Bar oil level") |
 
 Expected size: up to about 10 items per cabinet and up to 6 sub-checks per item. Test data and screen layouts are built to that size.
@@ -103,24 +108,30 @@ Expected size: up to about 10 items per cabinet and up to 6 sub-checks per item.
 | --- | --- |
 | Check | Check ID, apparatus, name, FF#, start time, completed time |
 | Cabinet result | Check ID, cabinet, opened time, completed time |
-| Item result | Check ID, cabinet, item, status (Present / Missing / Low), sub-check results (pass / fail), note |
-| Extra item | Check ID, cabinet, description, quantity, note |
+| Item result | Check ID, cabinet, item, status (Present / Missing / Low), found (count or level %), sub-check results (pass / fail), note |
+| Extra item | Check ID, cabinet, description, quantity, note. Older checks only while Add extra item is off. |
 
-Until the real list exists, the master list holds test data for S1 sized to the real truck: eight cabinets (L1 to L4, R1 to R4), up to 10 items per cabinet, up to 6 sub-checks per item, one to five placeholder photos per cabinet. The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
+Until the real list exists, there are two test sets for S1:
+
+- `data/trucks.json`, loaded by default: short set for quick runs. 4 cabinets (L1, L2, R1, R2), 14 items, one of each item type.
+- `data/trucks-full.json`, loaded by adding `?data=full` to the address: full-size set from phase 2. 8 cabinets (L1 to L4, R1 to R4), up to 10 items per cabinet, up to 6 sub-checks per item, one to five placeholder photos per cabinet.
+
+The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
 
 ## Check log and export
 
 Same approach as the SCBA log: completed checks are kept on the tablet and exported as one flat CSV, one row per item checked.
 
 ```csv
-check_id,date,apparatus,name,ff_number,cabinet,item,expected_qty,status,failed_subchecks,note
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Chainsaw,1,Present,Chain tension,Chain loose
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Floor dry,2,Low,,One bag left
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Pry bar,,Extra,,Qty 1; Not on list
+check_id,date,apparatus,name,ff_number,cabinet,item,expected_qty,found,status,failed_subchecks,note
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Chainsaw,1,,Present,Chain tension,Chain loose
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Floor dry,4,1,Low,,
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Mixed fuel can,1,50%,Low,,
 ```
 
 - Export CSV on the Log screen downloads the file to the tablet's Downloads folder.
-- Extra items go in the same file with status Extra. The quantity found goes at the start of the note ("Qty 1; Not on list").
+- `found` is the count for count items and the level ("50%") for level items. Blank for other items.
+- Extra items from older checks go in the same file with status Extra and the quantity in `found`.
 - Items in cabinets that weren't checked go in with status Not checked.
 - Column set is a starting point. Report format gets settled later.
 
@@ -133,10 +144,10 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
 1. **Click-through prototype** – done 18 Nov 2026. All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. Start to Log runs and the CSV exports.
 2. **Test data sized to the real truck** – done 18 Nov 2026. Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet.
-3. **UI refinement.** Run checks on the test data and fix layout, wording, button size and flow. *Done when:* Allan signs off the flow on the tablet.
+3. **UI refinement.** Run checks on the test data and fix layout, wording, button size and flow. Work list and batches in `docs/PHASE3.md`. *Done when:* Allan signs off the flow on the tablet.
 4. **Scanning in the flow.** Print test QR labels for the test cabinets. Add scan handling. *Done when:* a check on S1 test data is completed by scanning labels only.
 5. **Ready for real data.**
-   - Master list template: a spreadsheet, one row per item (apparatus, cabinet, item, expected quantity, consumable, sub-checks), converted to `data/trucks.json`.
+   - Master list template: a spreadsheet, one row per item (apparatus, cabinet, item, type, expected quantity, minimum or restock point, sub-checks), converted to `data/trucks.json`.
    - Photo rules for whoever takes the cabinet photos (whole cabinet first, then each shelf or drawer; landscape; taken from where the crew stands).
    - A way to clear or mark test checks so they don't end up in real exports.
    - Crew trial: one or two members run a check on test data and give feedback.
@@ -154,6 +165,7 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 - First Due, FireTrack, the SCBA tracker and the clothing inventory.
 - Phones, iOS and laptops.
 - Logins or user accounts. Name and FF# are entered per check.
+- Adding extra items found in a cabinet (off for now, may come back).
 - Kit pages and expiry tracking. Later, tapping the med kit could open its own page, like a sub-cabinet: a med kit master list by bag compartment, with expiry dates tracked. Needs its own scoping.
 
 ## Open items

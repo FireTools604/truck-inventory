@@ -1,0 +1,293 @@
+{
+  "version": "test-full-2026-11-18",
+  "note": "FULL-SIZE TEST DATA (8 cabinets). Not the real S1 contents.",
+  "apparatus": [
+    {
+      "id": "E1",
+      "name": "E1",
+      "cabinets": []
+    },
+    {
+      "id": "E1-2",
+      "name": "E1-2",
+      "cabinets": []
+    },
+    {
+      "id": "R1",
+      "name": "R1",
+      "cabinets": []
+    },
+    {
+      "id": "S1",
+      "name": "S1",
+      "cabinets": [
+        {
+          "id": "AFD-S1-L1",
+          "code": "L1",
+          "name": "Driver side 1",
+          "photos": [
+            { "src": "images/S1/L1-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L1-2.svg", "caption": "Top shelf" },
+            { "src": "images/S1/L1-3.svg", "caption": "Middle shelf" },
+            { "src": "images/S1/L1-4.svg", "caption": "Floor" }
+          ],
+          "items": [
+            {
+              "id": "chainsaw",
+              "name": "Chainsaw, 20 in. bar",
+              "qty": 1,
+              "subchecks": [
+                { "id": "bar-oil", "label": "Bar oil level" },
+                { "id": "fuel", "label": "Fuel level" },
+                { "id": "chain-tension", "label": "Chain tension" },
+                { "id": "chain-sharp", "label": "Chain sharp, no damaged teeth" },
+                { "id": "chain-brake", "label": "Chain brake engages and releases cleanly" },
+                { "id": "starts", "label": "Starts and runs" }
+              ]
+            },
+            {
+              "id": "rescue-saw",
+              "name": "Rescue saw (rotary, 14 in.) with diamond blade",
+              "qty": 1,
+              "subchecks": [
+                { "id": "fuel", "label": "Fuel level" },
+                { "id": "blade", "label": "Blade condition" },
+                { "id": "belt", "label": "Belt tension" },
+                { "id": "air-filter", "label": "Air filter clean" },
+                { "id": "guard", "label": "Blade guard moves freely" },
+                { "id": "starts", "label": "Starts and runs" }
+              ]
+            },
+            { "id": "saw-chaps", "name": "Saw chaps", "qty": 2, "subchecks": [] },
+            { "id": "spare-chain", "name": "Spare chain, 20 in.", "qty": 2, "subchecks": [] },
+            { "id": "spare-blade", "name": "Spare blade, abrasive metal-cutting, 14 in.", "qty": 1, "subchecks": [] },
+            { "id": "mixed-fuel", "name": "Mixed fuel can (50:1), 5 L, red", "type": "level", "qty": 1, "restockAt": 50, "subchecks": [] },
+            { "id": "bar-oil-jug", "name": "Bar oil (1 L)", "type": "level", "qty": 1, "restockAt": 50, "subchecks": [] },
+            { "id": "felling-wedges", "name": "Felling wedges", "qty": 3, "subchecks": [] },
+            { "id": "scrench", "name": "Scrench (combination spark plug and bar nut wrench)", "qty": 1, "subchecks": [] },
+            { "id": "eye-ear", "name": "Eye and ear protection kit", "qty": 2, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-L2",
+          "code": "L2",
+          "name": "Driver side 2",
+          "photos": [
+            { "src": "images/S1/L2-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L2-2.svg", "caption": "Slide-out tray" },
+            { "src": "images/S1/L2-3.svg", "caption": "Top shelf" }
+          ],
+          "items": [
+            {
+              "id": "generator",
+              "name": "Portable generator, 3500 W",
+              "qty": 1,
+              "subchecks": [
+                { "id": "fuel", "label": "Fuel level" },
+                { "id": "oil", "label": "Oil level" },
+                { "id": "starts", "label": "Starts and runs" },
+                { "id": "output", "label": "Output tested with a light" },
+                { "id": "gfci", "label": "GFCI trips and resets" }
+              ]
+            },
+            {
+              "id": "ppv-fan",
+              "name": "PPV fan, gas, 18 in.",
+              "qty": 1,
+              "subchecks": [
+                { "id": "fuel", "label": "Fuel level" },
+                { "id": "oil", "label": "Oil level" },
+                { "id": "guard", "label": "Guard intact" },
+                { "id": "starts", "label": "Starts and runs" }
+              ]
+            },
+            {
+              "id": "scene-light",
+              "name": "Portable LED scene light",
+              "qty": 2,
+              "subchecks": [
+                { "id": "works", "label": "Lights on all settings" }
+              ]
+            },
+            { "id": "extension-cord", "name": "Extension cord, 12/3, 50 ft", "qty": 2, "subchecks": [] },
+            { "id": "cord-reel", "name": "Cord reel, 150 ft, with twist-lock ends", "qty": 1, "subchecks": [] },
+            { "id": "junction-box", "name": "Junction box, 4-way", "qty": 1, "subchecks": [] },
+            { "id": "adapter-kit", "name": "Twist-lock to household adapter set", "qty": 1, "subchecks": [] },
+            { "id": "funnel", "name": "Fuel funnel", "qty": 1, "subchecks": [] },
+            { "id": "gas-can", "name": "Gas can, straight fuel, 10 L", "type": "level", "qty": 1, "restockAt": 50, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-L3",
+          "code": "L3",
+          "name": "Driver side 3",
+          "photos": [
+            { "src": "images/S1/L3-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L3-2.svg", "caption": "Top shelf" },
+            { "src": "images/S1/L3-3.svg", "caption": "Middle shelf" },
+            { "src": "images/S1/L3-4.svg", "caption": "Bottom shelf" },
+            { "src": "images/S1/L3-5.svg", "caption": "Door rack" }
+          ],
+          "items": [
+            { "id": "halligan", "name": "Halligan bar, 30 in.", "qty": 1, "subchecks": [] },
+            { "id": "flathead-axe", "name": "Flathead axe, 8 lb", "qty": 1, "subchecks": [] },
+            { "id": "pick-head-axe", "name": "Pick-head axe, 6 lb", "qty": 1, "subchecks": [] },
+            { "id": "sledge", "name": "Sledgehammer, 10 lb", "qty": 1, "subchecks": [] },
+            { "id": "bolt-cutters", "name": "Bolt cutters, 36 in.", "qty": 1, "subchecks": [] },
+            { "id": "pike-pole-6", "name": "Pike pole, 6 ft, fibreglass handle", "qty": 2, "subchecks": [] },
+            { "id": "drywall-hook", "name": "Drywall hook (multi-purpose ceiling and wall hook), 5 ft", "qty": 1, "subchecks": [] },
+            { "id": "k-tool", "name": "K-tool lock-pulling kit in pouch", "qty": 1, "subchecks": [] },
+            { "id": "rope-bag", "name": "Utility rope, 3/8 in. x 100 ft, in bag", "qty": 1, "subchecks": [] },
+            { "id": "door-chocks", "name": "Door chocks", "qty": 6, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-L4",
+          "code": "L4",
+          "name": "Driver side 4",
+          "photos": [
+            { "src": "images/S1/L4-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L4-2.svg", "caption": "Floor" }
+          ],
+          "items": [
+            { "id": "floor-dry", "name": "Floor dry (bags)", "type": "count", "qty": 2, "min": 1, "subchecks": [] },
+            { "id": "absorbent-pads", "name": "Absorbent pads (pack of 50)", "type": "count", "qty": 1, "min": 1, "subchecks": [] },
+            { "id": "absorbent-boom", "name": "Absorbent boom, 3 in. x 10 ft", "type": "count", "qty": 4, "min": 2, "subchecks": [] },
+            { "id": "drain-cover", "name": "Drain cover, 24 in. x 24 in.", "qty": 1, "subchecks": [] },
+            { "id": "disposal-bags", "name": "Hazmat disposal bags with ties", "type": "count", "qty": 10, "min": 5, "subchecks": [] },
+            { "id": "push-broom", "name": "Push broom", "qty": 1, "subchecks": [] },
+            { "id": "flat-shovel", "name": "Flat shovel, non-sparking", "qty": 1, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-R1",
+          "code": "R1",
+          "name": "Passenger side 1",
+          "photos": [
+            { "src": "images/S1/R1-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R1-2.svg", "caption": "Top shelf" },
+            { "src": "images/S1/R1-3.svg", "caption": "Bottom shelf" }
+          ],
+          "items": [
+            {
+              "id": "med-kit",
+              "name": "Med kit (first responder jump bag)",
+              "qty": 1,
+              "subchecks": [
+                { "id": "expiries", "label": "Check expiries" }
+              ]
+            },
+            {
+              "id": "aed",
+              "name": "AED",
+              "qty": 1,
+              "subchecks": [
+                { "id": "status", "label": "Status indicator OK" },
+                { "id": "pads", "label": "Pads in date" },
+                { "id": "spare-pads", "label": "Spare pads, in date" },
+                { "id": "kit", "label": "Razor, shears and towel in case" }
+              ]
+            },
+            {
+              "id": "o2-kit",
+              "name": "Oxygen kit, D cylinder, with regulator",
+              "qty": 1,
+              "subchecks": [
+                { "id": "pressure", "label": "Cylinder pressure above 1000 psi" },
+                { "id": "spare-cyl", "label": "Spare cylinder full" },
+                { "id": "masks", "label": "NRB masks and nasal cannulas, adult and paediatric" }
+              ]
+            },
+            { "id": "bvm", "name": "BVM, adult and paediatric", "qty": 1, "subchecks": [] },
+            { "id": "gloves", "name": "Exam gloves, nitrile, L and XL (box)", "type": "count", "qty": 2, "min": 1, "subchecks": [] },
+            { "id": "water", "name": "Water bottles, 500 mL", "type": "count", "qty": 24, "min": 12, "subchecks": [] },
+            { "id": "blankets", "name": "Wool blankets", "qty": 2, "subchecks": [] },
+            { "id": "sharps", "name": "Sharps container", "qty": 1, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-R2",
+          "code": "R2",
+          "name": "Passenger side 2",
+          "photos": [
+            { "src": "images/S1/R2-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R2-2.svg", "caption": "Hose shelf" },
+            { "src": "images/S1/R2-3.svg", "caption": "Appliance tray" },
+            { "src": "images/S1/R2-4.svg", "caption": "Door rack" }
+          ],
+          "items": [
+            { "id": "hose-175", "name": "Attack hose, 1.75\" x 50 ft, rolled", "qty": 4, "subchecks": [] },
+            { "id": "hose-25", "name": "Supply hose, 2.5\" x 50 ft, rolled", "qty": 2, "subchecks": [] },
+            {
+              "id": "combo-nozzle",
+              "name": "Combination nozzle, 1.5\"",
+              "qty": 2,
+              "subchecks": [
+                { "id": "bale", "label": "Bale opens and closes" },
+                { "id": "pattern", "label": "Pattern ring turns" }
+              ]
+            },
+            { "id": "gated-wye", "name": "Gated wye, 2.5\" x 1.5\" x 1.5\"", "qty": 1, "subchecks": [] },
+            { "id": "hydrant-wrench", "name": "Hydrant wrench, adjustable, with 2.5\" to 4\" Storz adapter", "qty": 1, "subchecks": [] },
+            { "id": "spanners", "name": "Spanner wrenches", "qty": 4, "subchecks": [] },
+            { "id": "double-female", "name": "Double female, 2.5\"", "qty": 1, "subchecks": [] },
+            { "id": "double-male", "name": "Double male, 2.5\"", "qty": 1, "subchecks": [] },
+            { "id": "reducer", "name": "Reducer, 2.5\" to 1.5\"", "qty": 2, "subchecks": [] },
+            { "id": "hose-straps", "name": "Hose straps", "qty": 4, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-R3",
+          "code": "R3",
+          "name": "Passenger side 3",
+          "photos": [
+            { "src": "images/S1/R3-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R3-2.svg", "caption": "Floor" }
+          ],
+          "items": [
+            { "id": "traffic-cones", "name": "Traffic cones, 28 in., reflective", "qty": 12, "subchecks": [] },
+            { "id": "road-signs", "name": "Roll-up road signs (Emergency Scene Ahead, Be Prepared to Stop)", "qty": 2, "subchecks": [] },
+            { "id": "stop-slow", "name": "Stop/slow paddle", "qty": 2, "subchecks": [] },
+            { "id": "flares", "name": "Road flares, 30 min", "type": "count", "qty": 12, "min": 6, "subchecks": [] },
+            { "id": "vests", "name": "Traffic vests, high-vis", "qty": 6, "subchecks": [] },
+            {
+              "id": "flashlights",
+              "name": "Traffic wand / flashlight",
+              "qty": 2,
+              "subchecks": [
+                { "id": "works", "label": "Works" },
+                { "id": "charged", "label": "Charged or spare batteries in place" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "AFD-S1-R4",
+          "code": "R4",
+          "name": "Passenger side 4",
+          "photos": [
+            { "src": "images/S1/R4-1.svg", "caption": "Whole cabinet" }
+          ],
+          "items": [
+            {
+              "id": "gas-detector",
+              "name": "Four-gas detector",
+              "qty": 1,
+              "subchecks": [
+                { "id": "charged", "label": "Charged" },
+                { "id": "bump", "label": "Bump test passed" },
+                { "id": "cal", "label": "Calibration in date" }
+              ]
+            },
+            { "id": "batteries", "name": "Spare batteries, AA (pack)", "type": "count", "qty": 2, "min": 1, "subchecks": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "T1",
+      "name": "T1",
+      "cabinets": []
+    }
+  ]
+}

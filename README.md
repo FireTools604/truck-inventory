@@ -5,6 +5,7 @@ Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department, run on
 Live page: https://firetools604.github.io/truck-inventory/
 
 - Spec: [`docs/SPEC.md`](docs/SPEC.md)
+- Phase 3 work list: [`docs/PHASE3.md`](docs/PHASE3.md)
 - Instructions for coding sessions: [`CLAUDE.md`](CLAUDE.md)
 - Scanner test: https://firetools604.github.io/truck-inventory/scan-test.html
 
@@ -15,7 +16,7 @@ Live page: https://firetools604.github.io/truck-inventory/
 | 0. Scanner test | Done 17 Nov 2026 |
 | 1. Click-through prototype, sample data for S1 | Done 18 Nov 2026 |
 | 2. Test data sized to the real truck | Done 18 Nov 2026 |
-| 3. UI refinement | Next |
+| 3. UI refinement | In progress. Work list: [`docs/PHASE3.md`](docs/PHASE3.md) |
 | 4. Scanning in the flow, test QR labels | |
 | 5. Ready for real data: template, photo rules, clear test checks, crew trial | |
 | 6. Real data for S1 after the retrofit, first duty-weekend check | |
@@ -28,48 +29,34 @@ Live page: https://firetools604.github.io/truck-inventory/
 | `index.html` | The app |
 | `css/app.css` | Styles |
 | `js/app.js` | App logic: screens, check data, CSV export |
-| `data/trucks.json` | Master list. Test data for S1 only (L1 to L4, R1 to R4), sized to the real truck |
+| `data/trucks.json` | Master list. Short test set for S1 (L1, L2, R1, R2), loaded by default |
+| `data/trucks-full.json` | Full-size test set for S1 (L1 to L4, R1 to R4). Load with `?data=full` |
 | `images/S1/` | Cabinet photos. Test placeholders for now |
 | `scan-test.html` | Phase 0 scanner test page |
 
-## Phase 2 test on the tablet
+## Testing on the tablet
 
-Same run as phase 1, on the larger test data. Cabinets are still picked by hand. Scanning comes in phase 4.
+Two test sets. Cabinets are picked by hand until phase 4.
 
-Before starting: if a check from phase 1 is still in progress, discard it. A check keeps the list it started with, so an old check won't show the new cabinets.
-
-What the test data covers:
-
-| Cabinet | What to look at |
+| Link | Data |
 | --- | --- |
-| L1 | 10 items, two with 6 sub-checks, long names, 4 photos |
-| L2 | 9 items, generator with 5 sub-checks, 3 photos |
-| L3 | 10 items, no sub-checks, longest names, 5 photos |
-| L4 | Mostly consumables (Low button), 2 photos |
-| R1 | Med kit with "Check expiries", AED, oxygen kit, qty 24 water |
-| R2 | 10 items with inch marks and commas in the names (CSV test) |
-| R3 | Qty 12 items, long sign name, 2 photos |
-| R4 | Only 2 items and 1 photo |
+| https://firetools604.github.io/truck-inventory/ | Short set: 4 cabinets, 14 items. For quick runs |
+| https://firetools604.github.io/truck-inventory/?data=full | Full-size set: 8 cabinets, 62 items. Run once per batch to check nothing breaks at full size |
 
-Done when every screen works at this size on the tablet. Check in particular:
+A check keeps the list it started with. After an update, discard any check in progress before testing.
 
-- Cabinet screen: photos swipe, item names wrap, Pass/Fail buttons stay usable with 6 sub-checks, Cabinet complete stays visible at the bottom.
-- Truck summary: long failed sub-check lists and notes stay readable.
-- Try the tablet both portrait and landscape.
-- Open the exported CSV and check the R2 names come through intact.
+**Quick run (short set)**
 
-## Phase 1 test on the tablet
+1. Pick **S1**, enter a name and FF#, tap **Start check**.
+2. **L1:** mark the chainsaw Present and work its 6 sub-checks. The list collapses when the last one is marked; tap **Show** to change one. Set the fuel can to 50% (flags restock) and bar oil to 75%.
+3. **L2:** count items. Tap − on floor dry (counts down from full), type a count for absorbent pads below 10 (flags restock), try **All 20**.
+4. **R1:** med kit "Check expiries", AED sub-checks, water bottles count.
+5. **R2:** leave part done.
+6. **Finish and review:** check Not checked, Outstanding and Low stock.
+7. **Complete check** twice, then **Export CSV**. The `found` column has counts and levels.
+8. Also try: reload Chrome mid-check (the check should resume), and the Android back button (steps back one screen).
 
-1. Open the live page in Chrome on the tablet.
-2. Pick **S1**, enter a name and FF#, tap **Start check**.
-3. Tap a cabinet. Swipe the photos. Mark each item Present, Missing or Low. Mark sub-checks Pass or Fail. Add a note or an extra item.
-4. Tap **Cabinet complete**. It stays grey until every item and sub-check is marked; tapping it jumps to the first unchecked item.
-5. Leave at least one cabinet unchecked, then tap **Finish and review**. Check the Not checked, Outstanding, Extra and Low stock lists.
-6. Tap **Complete check** twice. The Log screen opens.
-7. Tap **Export CSV**. The file lands in Downloads.
-8. Also try: reload Chrome mid-check (the check should resume), and the Android back button (should step back one screen).
-
-Done when a full check runs from Start to Log and the CSV exports.
+**Full-size set** covers: L1 and L3 at 10 items, two items with 6 sub-checks, long names, 1 to 5 photos per cabinet, R2 names with inch marks and commas (CSV test), R4 with 2 items and 1 photo.
 
 ## Data on the tablet
 

@@ -1,12 +1,14 @@
-/* Truck Inventory Check – AFD. Phase 1 click-through prototype.
+/* Truck Inventory Check – AFD. Proof of concept.
    Plain JavaScript, no libraries. Spec: docs/SPEC.md */
 (function(){
   "use strict";
 
-  var DATA_URL = "data/trucks.json";
+  // ?data=full loads the full-size test data (8 cabinets). Default is the short set for quick runs.
+  var DATA_URL = /[?&]data=full(&|$)/.test(location.search) ? "data/trucks-full.json" : "data/trucks.json";
   var KEY_ACTIVE = "afd-truck-check-active";   // check in progress
   var KEY_LOG = "afd-truck-check-log";         // completed checks
-  var CSV_COLS = ["check_id","date","apparatus","name","ff_number","cabinet","item","expected_qty","status","failed_subchecks","note"];
+  var CSV_COLS = ["check_id","date","apparatus","name","ff_number","cabinet","item","expected_qty","found","status","failed_subchecks","note"];
+  var LEVELS = [25, 50, 75, 100];
 
   var app = document.getElementById("app");
   var master = null;           // contents of data/trucks.json
@@ -15,6 +17,7 @@
   var view = { screen: "start", cab: null };
   var startSel = null;         // apparatus picked on the start screen
   var clockTimer = null;
+  var openSubs = {};           // "cabinet|item" -> true when a finished sub-check list has been reopened (screen only, not saved)
 
   // ---------- storage ----------
   function load(key, fallback){
@@ -84,6 +87,24 @@
     if (!check.results[cabId]) check.results[cabId] = { openedAt: null, completedAt: null, items: {}, extras: [] };
     return check.results[cabId];
   }
+  // Item types: "count" (crew counts them, Low below min), "level" (25/50/75/100 %, Low at or below restockAt),
+  // "plain" (Present/Missing). "legacy" = consumable:true from checks saved before phase 3 (Present/Missing/Low).
+  function kind(it){
+    if (it.type === "count" || it.type === "level") return it.type;
+    return it.consumable ? "legacy" : "plain";
+  }
+  function countStatus(it, n){ return n <= 0 ? "Missing" : (it.min != null && n < it.min ? "Low" : "Present"); }
+  function levelStatus(it, pct){ return it.restockAt != null && pct <= it.restockAt ? "Low" : "Present"; }
+  function foundText(it, r){
+    if (!r || r.found == null || r.found === "") return "";
+    return kind(it) === "level" ? r.found + "%" : String(r.found);
+  }
+  function lowText(it, r){
+    var k = kind(it);
+    if (k === "count") return "Found " + r.found + ", min " + it.min + " (full " + it.qty + ")";
+    if (k === "level") return r.found + "%, restock at " + it.restockAt + "%";
+    return "Low (expected " + it.qty + ")";
+  }
   function needsSubs(r){ return r && (r.status === "Present" || r.status === "Low"); }
   function itemDone(item, r){
     if (!r || !r.status) return false;
@@ -126,7 +147,7 @@
         if (r.status === "Missing") o.push({ name: it.name, what: "Missing (expected " + it.qty + ")", note: r.note });
         var f = failedSubs(it, r);
         if (f.length) o.push({ name: it.name, what: "Failed: " + f.join(", "), note: r.note });
-        if (r.status === "Low") l.push({ name: it.name, what: "Low (expected " + it.qty + ")", note: r.note });
+        if (r.status === "Low") l.push({ name: it.name, what: lowText(it, r), note: r.note });
       });
       var x = res.extras.map(function(e){ return { name: e.desc, what: "Qty " + e.qty, note: e.note }; });
       if (o.length) out.outstanding.push({ cab: cab, rows: o });
@@ -276,8 +297,7 @@
     h += '</div><div class="dots" id="dots">' + (photos.length > 1 ? photos.map(function(_, i){ return '<span class="' + (i ? "" : "on") + '"></span>'; }).join("") : "") + "</div></section>" +
       '<section class="list" id="list">';
     cab.items.forEach(function(it, i){ h += itemCard(it, i, res.items[it.id]); });
-    h += '<div class="extras" id="extras">' + extrasHtml(res) + "</div>" +
-      "</section>" +
+    h += "</section>" +
       '<div class="foot"><button class="primary" id="cabDone" data-act="cab-complete">Cabinet complete</button></div></div>';
     app.innerHTML = h;
 
@@ -295,46 +315,100 @@
     updateCabFooter();
   }
 
+  function noteBtn(r){ return '<button class="note-btn' + (r.note ? " has" : "") + '" data-act="note">Note</button>'; }
+
+  function qtyText(it){
+    var k = kind(it);
+    if (k === "count") return "Full " + esc(it.qty) + " · min " + esc(it.min);
+    if (k === "level") return (it.qty > 1 ? "Qty " + esc(it.qty) + " · " : "") + "Restock at " + esc(it.restockAt) + "%";
+    return "Qty " + esc(it.qty);
+  }
+
+  // Warning line under a count or level item. Empty unless Low or Missing.
+  function stockLine(it, r){
+    var t = "";
+    if (r && r.status === "Missing") t = kind(it) === "count" ? "None found – missing" : "Missing";
+    else if (r && r.status === "Low") t = kind(it) === "count" ? "Below minimum of " + it.min + " – restock" : "At or below " + it.restockAt + "% – restock";
+    return '<div class="stock' + (t ? " st-" + r.status : "") + '">' + esc(t) + "</div>";
+  }
+
   function itemCard(it, i, r){
     r = r || {};
-    var opts = ["Present", "Missing"].concat(it.consumable ? ["Low"] : []);
+    var k = kind(it);
     var h = '<div class="item' + (itemDone(it, r) ? "" : " todo") + '" id="it-' + i + '" data-i="' + i + '">' +
-      '<div class="item-head"><div class="item-name">' + esc(it.name) +
-      (it.consumable ? '<span class="item-tag">consumable</span>' : "") + "</div>" +
-      '<div class="item-qty">Qty ' + esc(it.qty) + "</div></div>" +
-      '<div class="seg">';
-    opts.forEach(function(o){
-      h += '<button data-act="status" data-v="' + o + '"' + (r.status === o ? ' class="on-' + o + '"' : "") + ">" + o + "</button>";
-    });
-    h += '<button class="note-btn' + (r.note ? " has" : "") + '" data-act="note">Note</button></div>';
-    if (needsSubs(r) && it.subchecks.length){
-      h += '<div class="subs">';
-      it.subchecks.forEach(function(s){
-        var v = r.sub && r.sub[s.id];
-        h += '<div class="sub' + (v ? "" : " todo") + '"><span>' + esc(s.label) + '</span><div class="seg">' +
-          '<button data-act="sub" data-sub="' + esc(s.id) + '" data-v="pass"' + (v === "pass" ? ' class="on-pass"' : "") + ">Pass</button>" +
-          '<button data-act="sub" data-sub="' + esc(s.id) + '" data-v="fail"' + (v === "fail" ? ' class="on-fail"' : "") + ">Fail</button>" +
-          "</div></div>";
+      '<div class="item-head"><div class="item-name">' + esc(it.name) + "</div>" +
+      '<div class="item-qty">' + qtyText(it) + "</div></div>";
+
+    if (k === "count"){
+      h += '<div class="count-row">' +
+        '<button class="step" data-act="count-step" data-d="-1" aria-label="One less">−</button>' +
+        '<input class="count-in' + (r.status ? " st-" + r.status : "") + '" type="number" inputmode="numeric" min="0" max="999" data-count' +
+        ' value="' + (r.found != null ? esc(r.found) : "") + '" placeholder="Count" aria-label="Count found">' +
+        '<button class="step" data-act="count-step" data-d="1" aria-label="One more">+</button>' +
+        '<button class="full-btn' + (r.found === it.qty ? " on" : "") + '" data-act="count-full">All ' + esc(it.qty) + "</button>" +
+        noteBtn(r) + "</div>" + stockLine(it, r);
+    } else if (k === "level"){
+      h += '<div class="seg level">';
+      LEVELS.forEach(function(p){
+        var on = r.status && r.status !== "Missing" && r.found === p;
+        h += '<button data-act="level" data-v="' + p + '"' + (on ? ' class="on-' + r.status + '"' : "") + ">" + p + "%</button>";
       });
-      h += "</div>";
+      h += '<button data-act="level" data-v="Missing"' + (r.status === "Missing" ? ' class="on-Missing"' : "") + ">Missing</button>" +
+        noteBtn(r) + "</div>" + stockLine(it, r);
+    } else {
+      var opts = ["Present", "Missing"].concat(k === "legacy" ? ["Low"] : []);
+      h += '<div class="seg">';
+      opts.forEach(function(o){
+        h += '<button data-act="status" data-v="' + o + '"' + (r.status === o ? ' class="on-' + o + '"' : "") + ">" + o + "</button>";
+      });
+      h += noteBtn(r) + "</div>";
     }
+
+    h += subsHtml(it, r);
     if (r.note || r.noteOpen) h += '<textarea class="note" data-note rows="2" maxlength="200" placeholder="Note">' + esc(r.note || "") + "</textarea>";
     return h + "</div>";
   }
 
-  function extrasHtml(res){
-    var h = "<h3>Extra items found</h3>";
-    res.extras.forEach(function(e, i){
-      h += '<div class="extra"><div><b>' + esc(e.desc) + "</b> · Qty " + esc(e.qty) + (e.note ? "<small>" + esc(e.note) + "</small>" : "") + "</div>" +
-        '<button class="danger" data-act="extra-del" data-i="' + i + '" data-confirm="Remove?">Remove</button></div>';
+  // Sub-checks collapse to one line once all are marked. Show/Hide reopens them.
+  function subsHtml(it, r){
+    if (!needsSubs(r) || !it.subchecks.length) return "";
+    var n = it.subchecks.length, all = true;
+    it.subchecks.forEach(function(s){ if (!r.sub || !r.sub[s.id]) all = false; });
+    if (all && !openSubs[view.cab + "|" + it.id]){
+      var f = failedSubs(it, r);
+      var txt = f.length ? f.length + " of " + plural(n, "sub-check") + " failed: " + f.join(", ")
+        : (n === 1 ? "Sub-check passed" : "All " + n + " sub-checks passed");
+      return '<div class="subs-done' + (f.length ? " has-fail" : "") + '"><span>' + esc(txt) + "</span>" +
+        '<button data-act="subs-toggle">Show</button></div>';
+    }
+    var h = '<div class="subs">';
+    it.subchecks.forEach(function(s){
+      var v = r.sub && r.sub[s.id];
+      h += '<div class="sub' + (v ? "" : " todo") + '"><span>' + esc(s.label) + '</span><div class="seg">' +
+        '<button data-act="sub" data-sub="' + esc(s.id) + '" data-v="pass"' + (v === "pass" ? ' class="on-pass"' : "") + ">Pass</button>" +
+        '<button data-act="sub" data-sub="' + esc(s.id) + '" data-v="fail"' + (v === "fail" ? ' class="on-fail"' : "") + ">Fail</button>" +
+        "</div></div>";
     });
-    h += '<div class="extra-form" id="extraForm" hidden>' +
-      '<div class="row2"><div class="field"><label for="xDesc">Item</label><input id="xDesc" autocomplete="off" maxlength="80"></div>' +
-      '<div class="field"><label for="xQty">Qty</label><input id="xQty" type="number" inputmode="numeric" min="1" value="1"></div></div>' +
-      '<div class="field"><label for="xNote">Note</label><input id="xNote" autocomplete="off" maxlength="200"></div>' +
-      '<div class="btn-row"><button class="primary" data-act="extra-add">Add</button><button data-act="extra-cancel">Cancel</button></div></div>' +
-      '<button class="wide" id="extraOpen" data-act="extra-open">+ Add extra item</button>';
-    return h;
+    if (all) h += '<button class="link subs-hide" data-act="subs-toggle">Hide sub-checks</button>';
+    return h + "</div>";
+  }
+
+  // Set a count. Status follows the count: 0 is Missing, below min is Low.
+  function setCount(x, n){
+    if (n == null || isNaN(n)){ x.r.found = null; x.r.status = ""; return; }
+    n = Math.max(0, Math.min(999, Math.floor(n)));
+    x.r.found = n;
+    x.r.status = countStatus(x.it, n);
+  }
+
+  // Update a count card in place while typing, so the keyboard stays open.
+  function lightUpdate(x){
+    var card = document.getElementById("it-" + x.i);
+    card.classList.toggle("todo", !itemDone(x.it, x.r));
+    var inp = card.querySelector(".count-in");
+    inp.className = "count-in" + (x.r.status ? " st-" + x.r.status : "");
+    card.querySelector(".full-btn").classList.toggle("on", x.r.found === x.it.qty);
+    card.querySelector(".stock").outerHTML = stockLine(x.it, x.r);
   }
 
   function currentCab(){ return cabById(view.cab); }
@@ -408,9 +482,10 @@
       });
       h += "</section>";
     }
+    // Extra items are off for now. The section only shows for older checks that recorded some.
     h += sumSection("out", "Outstanding", s.outstanding, "No missing items or failed sub-checks.") +
-      sumSection("ext", "Extra", s.extra, "No extra items recorded.") +
-      sumSection("low", "Low stock", s.low, "No consumables marked Low.") +
+      (count(s.extra) ? sumSection("ext", "Extra", s.extra, "") : "") +
+      sumSection("low", "Low stock", s.low, "Nothing below its restock point.") +
       "</div>" +
       '<div class="foot"><button data-act="to-scanner">Back to cabinets</button>' +
       '<button class="primary" data-act="complete-check" data-confirm="' +
@@ -441,7 +516,7 @@
         '<div class="chips">' +
         (s.notChecked.length ? '<span class="chip amber">' + plural(s.notChecked.length, "cabinet") + " not checked</span>" : "") +
         '<span class="chip' + (o ? " red" : "") + '">' + o + " outstanding</span>" +
-        '<span class="chip' + (x ? " blue" : "") + '">' + x + " extra</span>" +
+        (x ? '<span class="chip blue">' + x + " extra</span>" : "") +
         '<span class="chip' + (l ? " amber" : "") + '">' + l + " low</span></div></div>";
     });
     h += "</section>" +
@@ -465,10 +540,11 @@
         cab.items.forEach(function(it){
           var r = res.items[it.id];
           var status = r && r.status ? r.status : "Not checked";
-          rows.push(base.concat([cab.id, it.name, it.qty, status, failedSubs(it, r).join("; "), r ? r.note : ""]));
+          rows.push(base.concat([cab.id, it.name, it.qty, foundText(it, r), status, failedSubs(it, r).join("; "), r ? r.note : ""]));
         });
+        // Only older checks have extras. Quantity found goes in the found column.
         res.extras.forEach(function(e){
-          rows.push(base.concat([cab.id, e.desc, "", "Extra", "", "Qty " + e.qty + (e.note ? "; " + e.note : "")]));
+          rows.push(base.concat([cab.id, e.desc, "", e.qty, "Extra", "", e.note]));
         });
       });
     });
@@ -528,33 +604,27 @@
       var nt = document.querySelector("#it-" + x.i + " textarea.note");
       if (nt) nt.focus();
     },
-    "extra-open": function(){
-      document.getElementById("extraForm").hidden = false;
-      document.getElementById("extraOpen").hidden = true;
-      document.getElementById("xDesc").focus();
+    "level": function(b){
+      var x = itemResult(b);
+      if (b.dataset.v === "Missing"){ x.r.status = "Missing"; x.r.found = null; }
+      else { x.r.found = +b.dataset.v; x.r.status = levelStatus(x.it, x.r.found); }
+      saveActive(); refreshCard(x.i); updateCabFooter();
     },
-    "extra-cancel": function(){
-      document.getElementById("extraForm").hidden = true;
-      document.getElementById("extraOpen").hidden = false;
+    "count-step": function(b){
+      var x = itemResult(b), d = +b.dataset.d;
+      // First tap counts down from full (−) or sets full (+).
+      setCount(x, x.r.found == null ? (d < 0 ? x.it.qty - 1 : x.it.qty) : x.r.found + d);
+      saveActive(); refreshCard(x.i); updateCabFooter();
     },
-    "extra-add": function(){
-      var desc = document.getElementById("xDesc").value.trim();
-      var qty = parseInt(document.getElementById("xQty").value, 10);
-      var note = document.getElementById("xNote").value.trim();
-      if (!desc){ toast("Enter what the item is"); document.getElementById("xDesc").focus(); return; }
-      var res = result(active, view.cab);
-      res.extras.push({ desc: desc, qty: qty > 0 ? qty : 1, note: note });
-      saveActive();
-      document.getElementById("extras").innerHTML = extrasHtml(res);
-      updateCabFooter();
-      toast("Extra item added");
+    "count-full": function(b){
+      var x = itemResult(b);
+      setCount(x, x.it.qty);
+      saveActive(); refreshCard(x.i); updateCabFooter();
     },
-    "extra-del": function(b){
-      if (!armed(b)) return;
-      var res = result(active, view.cab);
-      res.extras.splice(+b.dataset.i, 1);
-      saveActive();
-      document.getElementById("extras").innerHTML = extrasHtml(res);
+    "subs-toggle": function(b){
+      var x = itemResult(b), key = view.cab + "|" + x.it.id;
+      openSubs[key] = !openSubs[key];
+      refreshCard(x.i);
     },
     "complete-check": function(b){ if (armed(b)) completeCheck(); },
     "export": exportCsv
@@ -577,6 +647,12 @@
   app.addEventListener("input", function(e){
     var t = e.target;
     if (t.id === "fName" || t.id === "fFF"){ updateStartBtn(); return; }
+    if (t.matches("[data-count]")){
+      var c = itemResult(t);
+      setCount(c, t.value.trim() === "" ? null : parseInt(t.value, 10));
+      saveActive(); lightUpdate(c); updateCabFooter();
+      return;
+    }
     if (t.matches("textarea.note")){
       var x = itemResult(t);
       x.r.note = t.value;
@@ -589,7 +665,15 @@
   app.addEventListener("keydown", function(e){
     if (e.key !== "Enter") return;
     if ((e.target.id === "fName" || e.target.id === "fFF") && !document.getElementById("startBtn").disabled){ e.preventDefault(); startCheck(); }
-    if (/^x(Desc|Qty|Note)$/.test(e.target.id)){ e.preventDefault(); actions["extra-add"](); }
+    if (e.target.matches("[data-count]")){ e.preventDefault(); e.target.blur(); }
+  });
+
+  // After typing a count: if the saved number differs from what's shown (e.g. "-3" saved as 0), show the saved one.
+  // Only the input's value changes, so a tap on another button in the card isn't lost.
+  app.addEventListener("change", function(e){
+    if (!e.target.matches("[data-count]")) return;
+    var x = itemResult(e.target), shown = x.r.found == null ? "" : String(x.r.found);
+    if (e.target.value !== shown) e.target.value = shown;
   });
 
   // ---------- boot ----------
