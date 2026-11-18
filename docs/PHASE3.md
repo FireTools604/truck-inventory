@@ -14,15 +14,15 @@ Quick runs use the short test set (default). Run the full-size set (`?data=full`
 
 ## Batch 1 – quick test truck, sub-checks, consumables, extra items
 
-Built 18 Nov 2026. Tablet test pending.
+Done 18 Nov 2026. Tested on the tablet by Allan (PR #8, cache fix PR #9, app version 2026-11-18b).
 
 - [x] Short test set (4 cabinets, 14 items) for quick runs. Full-size set kept at `?data=full`.
 - [x] Sub-checks collapse to one line once all are marked. Show / Hide to change them.
 - [x] Consumables: count items (count found, minimum flags Low, zero is Missing) and level items (25/50/75/100%, restock point flags Low). Placeholder minimums; restock point 50%.
 - [x] Add extra item removed for now.
-- [ ] Tablet test and merge.
+- [x] Tablet test and merge.
 
-## Batch 2 – photos
+## Batch 2 – photos (next)
 
 Needs from Allan: 3 to 6 real cabinet photos (any truck), taken the way the crew should see them.
 
