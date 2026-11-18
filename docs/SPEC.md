@@ -132,7 +132,7 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
 1. **Click-through prototype** – done 18 Nov 2026. All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. Start to Log runs and the CSV exports.
-2. **Test data sized to the real truck.** Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet. *Status:* test data loaded 18 Nov 2026; tablet test pending.
+2. **Test data sized to the real truck** – done 18 Nov 2026. Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet.
 3. **UI refinement.** Run checks on the test data and fix layout, wording, button size and flow. *Done when:* Allan signs off the flow on the tablet.
 4. **Scanning in the flow.** Print test QR labels for the test cabinets. Add scan handling. *Done when:* a check on S1 test data is completed by scanning labels only.
 5. **Ready for real data.**
