@@ -106,7 +106,7 @@ Expected size: up to about 10 items per cabinet and up to 6 sub-checks per item.
 | Item result | Check ID, cabinet, item, status (Present / Missing / Low), sub-check results (pass / fail), note |
 | Extra item | Check ID, cabinet, description, quantity, note |
 
-For the proof of concept the master list holds sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
+Until the real list exists, the master list holds test data for S1 sized to the real truck: eight cabinets (L1 to L4, R1 to R4), up to 10 items per cabinet, up to 6 sub-checks per item, one to five placeholder photos per cabinet. The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
 
 ## Check log and export
 
@@ -132,7 +132,7 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
 1. **Click-through prototype** – done 18 Nov 2026. All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. Start to Log runs and the CSV exports.
-2. **Test data sized to the real truck.** Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet.
+2. **Test data sized to the real truck.** Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet. *Status:* test data loaded 18 Nov 2026; tablet test pending.
 3. **UI refinement.** Run checks on the test data and fix layout, wording, button size and flow. *Done when:* Allan signs off the flow on the tablet.
 4. **Scanning in the flow.** Print test QR labels for the test cabinets. Add scan handling. *Done when:* a check on S1 test data is completed by scanning labels only.
 5. **Ready for real data.**
@@ -168,3 +168,5 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 - [ ] How exported CSVs get off the tablet
 - [ ] Dispatcher OK to use the tablets on duty weekends
 - [ ] Med kit master list (by bag compartment) and expiry tracker: scope later
+- [ ] Tablet held portrait or landscape at the truck? In landscape the cabinet screen shows about two items under the photos. Settle in phase 3.
+- [ ] Log size: one completed check at test size is about 14 KB in localStorage. Chrome allows about 5 MB per site, and every FireTools604 page on GitHub Pages shares that site's storage. Decide in phase 5 whether to prune exported checks.

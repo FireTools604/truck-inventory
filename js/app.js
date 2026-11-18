@@ -237,7 +237,7 @@
     var h = '<div class="page">' +
       bar(esc(active.apparatus.id) + " check", checkSub(), '<button class="bar-btn" data-act="to-start">Menu</button>', done + " / " + list.length + " done") +
       '<div class="body">' +
-      '<div class="prompt"><div>Pick a cabinet<small>Tap a cabinet to check it. Scanning cabinet labels comes in phase 2.</small></div></div>' +
+      '<div class="prompt"><div>Pick a cabinet<small>Tap a cabinet to check it. Scanning cabinet labels comes in phase 4.</small></div></div>' +
       '<div class="cab-list">';
     list.forEach(function(c){
       var st = cabState(active, c), p = progress(active, c);
