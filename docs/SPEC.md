@@ -1,6 +1,6 @@
 # Truck Inventory Check – Project Spec
 
-Last updated 2026-11-18. Living version: the Claude doc "Truck Inventory Check – Project Spec". Keep this file in step with it.
+Last updated 2026-11-18. This file is the master copy of the spec. Every chat in the Truck Inventory Check Project reads it from the repo. The old Claude doc "Truck Inventory Check – Project Spec" is retired and no longer kept up to date.
 
 ## Purpose and scope
 
