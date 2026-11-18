@@ -28,3 +28,4 @@ Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department. Owner:
 - Ask before adding libraries, a backend or a new data store.
 - Flag anything that would need access to the tablet's settings.
 - When the spec changes, update `docs/SPEC.md` in the same change.
+- Decisions made in a chat go into `docs/SPEC.md` before the chat ends. New chats only see what's in the repo on `main`.
