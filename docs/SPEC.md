@@ -30,35 +30,37 @@ localStorage belongs to one browser on one tablet. Clearing Chrome's site data w
 
 ## Check workflow
 
-One crew member, one tablet, one apparatus per check: pick the truck, scan each cabinet, work its checklist, then close the truck out. Finish and review sits on the scanner screen.
+One crew member, one tablet, one apparatus per check: pick the truck, scan each cabinet, work its checklist, then close the truck out. Finish and review sits on the scanner screen and is available at any time, even with cabinets left unchecked.
 
 ```
 Start check (pick apparatus, name, FF#)
   -> Scanner screen (cabinet list and status)
        -> scan cabinet -> Cabinet screen -> confirm cabinet complete -> back to Scanner screen
-       -> Finish and review -> Truck summary (outstanding, extra, low stock) -> Complete -> Saved to log
+       -> Finish and review -> Truck summary (not checked, outstanding, extra, low stock) -> Complete -> Saved to log
 ```
 
 ## Screens
 
 | Screen | What it does | What's on it |
 | --- | --- | --- |
-| Start | Opens a new check | Apparatus buttons (E1, E1-2, R1, S1, T1). Name, FF#, other check details. Date and time filled in automatically. |
-| Scanner | Home base for the check | "Scan a cabinet" prompt. List of that apparatus's cabinets showing not started, in progress or done. Manual cabinet pick if a label won't scan. Finish and review button. |
+| Start | Opens a new check | Apparatus buttons (E1, E1-2, R1, S1, T1). Name and FF#. Date and time filled in automatically. |
+| Scanner | Home base for the check | "Scan a cabinet" prompt. List of that apparatus's cabinets showing not started, in progress or done. Manual cabinet pick if a label won't scan. Finish and review button, available any time. |
 | Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Bottom two thirds: the checklist. Add extra item button. Cabinet complete button. |
-| Truck summary | Review before closing the check | Outstanding items, extra items and low stock, grouped by cabinet. Complete check button. |
+| Truck summary | Review before closing the check | Not checked cabinets at the top, then outstanding items, extra items and low stock, grouped by cabinet. Complete check button. |
 | Log | Past checks on this tablet | Checks listed newest first. Export CSV button. |
 
 **Cabinet checklist.** Every item that belongs in the cabinet is listed with its expected quantity.
 
 - Each item is marked **Present** or **Missing**. Consumables (floor dry, water bottles) can also be marked **Low**.
-- Items that need a detailed check expand into a sub-list. Example: chainsaw → bar oil level, fuel level, chain tension. Each sub-check is marked pass or fail.
+- Items that need a detailed check expand into a sub-list. Example: chainsaw → bar oil level, fuel level, chain tension. Each sub-check is marked pass or fail. An item marked Present or Low isn't checked until all its sub-checks are marked. Missing items skip their sub-checks.
 - Any item can take a short note.
 - **Add extra item** records something found in the cabinet that isn't on its list.
 - Cabinet complete is allowed once every item has a status. Unchecked items stay highlighted until then.
+- A cabinet can be reopened after it's complete. If a change leaves an item unchecked, the cabinet goes back to in progress.
 
 **Truck summary** lists:
 
+- **Not checked:** cabinets not marked complete, shown at the top as "Not started" or "In progress, x of y items". The check can still be completed.
 - **Outstanding:** missing items and failed sub-checks.
 - **Extra:** items added on the cabinet screen.
 - **Low stock:** consumables marked Low.
@@ -75,7 +77,7 @@ Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in th
 **How a scan is handled**
 
 - A hidden text field keeps focus so DataWedge can type into it. The on-screen keyboard stays hidden (`inputmode="none"`).
-- A scan is complete on Enter or Tab, or after a short pause (about 250 ms) if DataWedge sends neither. `scan-test.html` / the current `index.html` already does this.
+- A scan is complete on Enter or Tab, or after a short pause (about 250 ms) if DataWedge sends neither. `scan-test.html` already does this.
 - Scanning a cabinet label opens that cabinet's screen.
 - Scan while on a cabinet screen: if it's the same cabinet, nothing happens. If it's a different cabinet, ask before leaving the current one.
 
@@ -96,12 +98,12 @@ The master list (what should be on each truck) is a JSON file in the repo, `data
 
 | Record | Fields |
 | --- | --- |
-| Check | Check ID, apparatus, name, FF#, other details, start time, completed time |
+| Check | Check ID, apparatus, name, FF#, start time, completed time |
 | Cabinet result | Check ID, cabinet, opened time, completed time |
 | Item result | Check ID, cabinet, item, status (Present / Missing / Low), sub-check results (pass / fail), note |
 | Extra item | Check ID, cabinet, description, quantity, note |
 
-For the proof of concept the master list holds sample data for one apparatus. The real list gets loaded once truck contents are finalized.
+For the proof of concept the master list holds sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
 
 ## Check log and export
 
@@ -111,11 +113,12 @@ Same approach as the SCBA log: completed checks are kept on the tablet and expor
 check_id,date,apparatus,name,ff_number,cabinet,item,expected_qty,status,failed_subchecks,note
 E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Chainsaw,1,Present,Chain tension,Chain loose
 E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Floor dry,2,Low,,One bag left
-E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Pry bar,,Extra,,Not on list
+E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Pry bar,,Extra,,Qty 1; Not on list
 ```
 
 - Export CSV on the Log screen downloads the file to the tablet's Downloads folder.
-- Extra items go in the same file with status Extra.
+- Extra items go in the same file with status Extra. The quantity found goes at the start of the note ("Qty 1; Not on list").
+- Items in cabinets that weren't checked go in with status Not checked.
 - Column set is a starting point. Report format gets settled later.
 
 ## Build phases
@@ -123,10 +126,10 @@ E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Pry bar,,Extra,,Not on lis
 Each phase is tested on the tablet before the next one starts.
 
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
-1. **Click-through prototype.** All five screens working with sample data for E1 (three or four cabinets, placeholder photos). Cabinets picked by hand. *Done when:* a full check runs from Start to Log and the CSV exports.
-2. **Scanning in the flow.** Print test QR labels for the sample cabinets. Add scan handling. *Done when:* a check on E1 is completed by scanning labels only.
-3. **Real data for one apparatus.** Load E1's actual contents, sub-checks and photos. Fit permanent labels. *Done when:* one real duty-weekend check is completed and crew feedback is collected.
-4. **Remaining apparatus.** E1-2, R1, S1, T1: master list, photos and labels for each.
+1. **Click-through prototype.** All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. *Done when:* a full check runs from Start to Log and the CSV exports.
+2. **Scanning in the flow.** Print test QR labels for the sample cabinets. Add scan handling. *Done when:* a check on S1 is completed by scanning labels only.
+3. **Real data for one apparatus.** Load S1's actual contents, sub-checks and photos. Fit permanent labels. *Done when:* one real duty-weekend check is completed and crew feedback is collected.
+4. **Remaining apparatus.** E1, E1-2, R1, T1: master list, photos and labels for each.
 
 ## Not in this build
 
@@ -142,9 +145,9 @@ Each phase is tested on the tablet before the next one starts.
 
 - [ ] Final contents for each apparatus and cabinet (the master list)
 - [ ] Codes for any rear or top compartments (L and R cover the sides)
-- [ ] Other check details on the Start screen, beyond name and FF#
+- [x] Other check details on the Start screen: name and FF# only for now (decided 18 Nov 2026)
 - [ ] Add a Damaged / needs repair status, or leave that to notes and failed sub-checks?
-- [ ] Can a truck be completed with cabinets unchecked? If so, how are they shown in the summary?
+- [x] Can a truck be completed with cabinets unchecked? Yes. Finish and review is available any time; unchecked cabinets show at the top of the truck summary as "Not checked" (decided 18 Nov 2026)
 - [ ] Label material and printing (laminated, like the SPU bin labels?)
 - [ ] Who takes the cabinet and shelf photos
 - [ ] How exported CSVs get off the tablet

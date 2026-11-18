@@ -1,0 +1,135 @@
+{
+  "version": "sample-2026-11-18",
+  "note": "SAMPLE DATA for the phase 1 prototype. Not the real S1 contents.",
+  "apparatus": [
+    {
+      "id": "E1",
+      "name": "E1",
+      "cabinets": []
+    },
+    {
+      "id": "E1-2",
+      "name": "E1-2",
+      "cabinets": []
+    },
+    {
+      "id": "R1",
+      "name": "R1",
+      "cabinets": []
+    },
+    {
+      "id": "S1",
+      "name": "S1",
+      "cabinets": [
+        {
+          "id": "AFD-S1-L1",
+          "code": "L1",
+          "name": "Driver side 1",
+          "photos": [
+            { "src": "images/S1/L1-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L1-2.svg", "caption": "Top shelf" },
+            { "src": "images/S1/L1-3.svg", "caption": "Bottom shelf" }
+          ],
+          "items": [
+            {
+              "id": "chainsaw",
+              "name": "Chainsaw",
+              "qty": 1,
+              "consumable": false,
+              "subchecks": [
+                { "id": "bar-oil", "label": "Bar oil level" },
+                { "id": "fuel", "label": "Fuel level" },
+                { "id": "chain-tension", "label": "Chain tension" }
+              ]
+            },
+            { "id": "saw-chaps", "name": "Saw chaps", "qty": 1, "consumable": false, "subchecks": [] },
+            { "id": "spare-chain", "name": "Spare chain", "qty": 2, "consumable": false, "subchecks": [] },
+            { "id": "mixed-fuel", "name": "Mixed fuel can", "qty": 1, "consumable": false, "subchecks": [] },
+            { "id": "bar-oil-jug", "name": "Bar oil (1 L)", "qty": 1, "consumable": true, "subchecks": [] },
+            { "id": "felling-wedges", "name": "Felling wedges", "qty": 2, "consumable": false, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-L2",
+          "code": "L2",
+          "name": "Driver side 2",
+          "photos": [
+            { "src": "images/S1/L2-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L2-2.svg", "caption": "Floor" }
+          ],
+          "items": [
+            { "id": "floor-dry", "name": "Floor dry (bags)", "qty": 2, "consumable": true, "subchecks": [] },
+            { "id": "absorbent-pads", "name": "Absorbent pads (pack)", "qty": 1, "consumable": true, "subchecks": [] },
+            { "id": "push-broom", "name": "Push broom", "qty": 1, "consumable": false, "subchecks": [] },
+            { "id": "flat-shovel", "name": "Flat shovel", "qty": 1, "consumable": false, "subchecks": [] },
+            { "id": "traffic-cones", "name": "Traffic cones", "qty": 4, "consumable": false, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-R1",
+          "code": "R1",
+          "name": "Passenger side 1",
+          "photos": [
+            { "src": "images/S1/R1-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R1-2.svg", "caption": "Slide-out tray" }
+          ],
+          "items": [
+            {
+              "id": "generator",
+              "name": "Portable generator",
+              "qty": 1,
+              "consumable": false,
+              "subchecks": [
+                { "id": "fuel", "label": "Fuel level" },
+                { "id": "oil", "label": "Oil level" },
+                { "id": "starts", "label": "Starts and runs" }
+              ]
+            },
+            { "id": "scene-light", "name": "Portable scene light", "qty": 2, "consumable": false, "subchecks": [] },
+            { "id": "extension-cord", "name": "Extension cord, 50 ft", "qty": 2, "consumable": false, "subchecks": [] },
+            { "id": "cord-reel", "name": "Cord reel", "qty": 1, "consumable": false, "subchecks": [] }
+          ]
+        },
+        {
+          "id": "AFD-S1-R2",
+          "code": "R2",
+          "name": "Passenger side 2",
+          "photos": [
+            { "src": "images/S1/R2-1.svg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R2-2.svg", "caption": "Top shelf" },
+            { "src": "images/S1/R2-3.svg", "caption": "Bottom shelf" }
+          ],
+          "items": [
+            {
+              "id": "first-aid-kit",
+              "name": "First aid kit",
+              "qty": 1,
+              "consumable": false,
+              "subchecks": [
+                { "id": "seal", "label": "Seal intact" },
+                { "id": "expiry", "label": "No expired supplies" }
+              ]
+            },
+            {
+              "id": "aed",
+              "name": "AED",
+              "qty": 1,
+              "consumable": false,
+              "subchecks": [
+                { "id": "status", "label": "Status indicator OK" },
+                { "id": "pads", "label": "Pads in date" }
+              ]
+            },
+            { "id": "water", "name": "Water bottles (case)", "qty": 1, "consumable": true, "subchecks": [] },
+            { "id": "blankets", "name": "Wool blankets", "qty": 2, "consumable": false, "subchecks": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "T1",
+      "name": "T1",
+      "cabinets": []
+    }
+  ]
+}
