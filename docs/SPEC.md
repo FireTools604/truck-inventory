@@ -57,6 +57,7 @@ Start check (pick apparatus, name, FF#)
 - **Add extra item** records something found in the cabinet that isn't on its list.
 - Cabinet complete is allowed once every item has a status. Unchecked items stay highlighted until then.
 - A cabinet can be reopened after it's complete. If a change leaves an item unchecked, the cabinet goes back to in progress.
+- **Kits** (the med kit) are one item with a "Check expiries" sub-check for now. A kit page of its own comes later (see Not in this build).
 
 **Truck summary** lists:
 
@@ -94,6 +95,8 @@ The master list (what should be on each truck) is a JSON file in the repo, `data
 | Item | ID, name, expected quantity, consumable yes/no (allows Low), list of sub-checks |
 | Sub-check | ID, label ("Bar oil level") |
 
+Expected size: up to about 10 items per cabinet and up to 6 sub-checks per item. Test data and screen layouts are built to that size.
+
 **Check results**
 
 | Record | Fields |
@@ -125,11 +128,22 @@ E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Pry bar,,Extra,,Qty 1; Not
 
 Each phase is tested on the tablet before the next one starts.
 
+S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases 2 to 5 build and refine the app on test data. Phase 6 loads the real contents once S1's equipment is confirmed.
+
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
-1. **Click-through prototype.** All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. *Done when:* a full check runs from Start to Log and the CSV exports.
-2. **Scanning in the flow.** Print test QR labels for the sample cabinets. Add scan handling. *Done when:* a check on S1 is completed by scanning labels only.
-3. **Real data for one apparatus.** Load S1's actual contents, sub-checks and photos. Fit permanent labels. *Done when:* one real duty-weekend check is completed and crew feedback is collected.
-4. **Remaining apparatus.** E1, E1-2, R1, T1: master list, photos and labels for each.
+1. **Click-through prototype** – done 18 Nov 2026. All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. Start to Log runs and the CSV exports.
+2. **Test data sized to the real truck.** Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet.
+3. **UI refinement.** Run checks on the test data and fix layout, wording, button size and flow. *Done when:* Allan signs off the flow on the tablet.
+4. **Scanning in the flow.** Print test QR labels for the test cabinets. Add scan handling. *Done when:* a check on S1 test data is completed by scanning labels only.
+5. **Ready for real data.**
+   - Master list template: a spreadsheet, one row per item (apparatus, cabinet, item, expected quantity, consumable, sub-checks), converted to `data/trucks.json`.
+   - Photo rules for whoever takes the cabinet photos (whole cabinet first, then each shelf or drawer; landscape; taken from where the crew stands).
+   - A way to clear or mark test checks so they don't end up in real exports.
+   - Crew trial: one or two members run a check on test data and give feedback.
+
+   *Done when:* the template is agreed, the photo rules are written, test checks can be cleared and crew trial feedback is in.
+6. **Real data for S1.** After the retrofit: fill in the template, load S1's contents, sub-checks and photos, fit permanent labels. *Done when:* one real duty-weekend check is completed and crew feedback is collected.
+7. **Remaining apparatus.** E1, E1-2, R1, T1: master list, photos and labels for each.
 
 ## Not in this build
 
@@ -140,6 +154,7 @@ Each phase is tested on the tablet before the next one starts.
 - First Due, FireTrack, the SCBA tracker and the clothing inventory.
 - Phones, iOS and laptops.
 - Logins or user accounts. Name and FF# are entered per check.
+- Kit pages and expiry tracking. Later, tapping the med kit could open its own page, like a sub-cabinet: a med kit master list by bag compartment, with expiry dates tracked. Needs its own scoping.
 
 ## Open items
 
@@ -152,3 +167,4 @@ Each phase is tested on the tablet before the next one starts.
 - [ ] Who takes the cabinet and shelf photos
 - [ ] How exported CSVs get off the tablet
 - [ ] Dispatcher OK to use the tablets on duty weekends
+- [ ] Med kit master list (by bag compartment) and expiry tracker: scope later
