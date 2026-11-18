@@ -126,9 +126,9 @@ textarea.note{display:block;width:100%;margin-top:10px;font:16px system-ui,sans-
 .sum-group:last-child{margin-bottom:0}
 .sum-group h3{font-size:16px;margin:0 0 6px}
 .sum-line{display:flex;gap:10px;padding:8px 0;border-top:1px solid #edf0f3;font-size:16px}
-.sum-line > span:first-child{flex:1}
+.sum-line > span:first-child{flex:1 1 0;min-width:45%}
 .sum-line small{display:block;color:var(--muted);font-size:14px}
-.sum-line .what{color:#344150;text-align:right}
+.sum-line .what{flex:0 1 auto;max-width:55%;color:#344150;text-align:right}
 .none{color:var(--muted);font-size:15px}
 .sum.nc{border-color:#f0d495;background:var(--amber-soft)}
 .sum.out{border-left:6px solid var(--red)}

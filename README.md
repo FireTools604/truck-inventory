@@ -14,7 +14,7 @@ Live page: https://firetools604.github.io/truck-inventory/
 | --- | --- |
 | 0. Scanner test | Done 17 Nov 2026 |
 | 1. Click-through prototype, sample data for S1 | Done 18 Nov 2026 |
-| 2. Test data sized to the real truck | Next |
+| 2. Test data sized to the real truck | Test data in 18 Nov 2026. Tablet test pending |
 | 3. UI refinement | |
 | 4. Scanning in the flow, test QR labels | |
 | 5. Ready for real data: template, photo rules, clear test checks, crew trial | |
@@ -28,13 +28,37 @@ Live page: https://firetools604.github.io/truck-inventory/
 | `index.html` | The app |
 | `css/app.css` | Styles |
 | `js/app.js` | App logic: screens, check data, CSV export |
-| `data/trucks.json` | Master list. Sample data for S1 only (L1, L2, R1, R2) |
-| `images/S1/` | Cabinet photos. Placeholders for now |
+| `data/trucks.json` | Master list. Test data for S1 only (L1 to L4, R1 to R4), sized to the real truck |
+| `images/S1/` | Cabinet photos. Test placeholders for now |
 | `scan-test.html` | Phase 0 scanner test page |
 
-## Phase 1 test on the tablet
+## Phase 2 test on the tablet
 
-Cabinets are picked by hand in this phase. Scanning comes in phase 2.
+Same run as phase 1, on the larger test data. Cabinets are still picked by hand. Scanning comes in phase 4.
+
+Before starting: if a check from phase 1 is still in progress, discard it. A check keeps the list it started with, so an old check won't show the new cabinets.
+
+What the test data covers:
+
+| Cabinet | What to look at |
+| --- | --- |
+| L1 | 10 items, two with 6 sub-checks, long names, 4 photos |
+| L2 | 9 items, generator with 5 sub-checks, 3 photos |
+| L3 | 10 items, no sub-checks, longest names, 5 photos |
+| L4 | Mostly consumables (Low button), 2 photos |
+| R1 | Med kit with "Check expiries", AED, oxygen kit, qty 24 water |
+| R2 | 10 items with inch marks and commas in the names (CSV test) |
+| R3 | Qty 12 items, long sign name, 2 photos |
+| R4 | Only 2 items and 1 photo |
+
+Done when every screen works at this size on the tablet. Check in particular:
+
+- Cabinet screen: photos swipe, item names wrap, Pass/Fail buttons stay usable with 6 sub-checks, Cabinet complete stays visible at the bottom.
+- Truck summary: long failed sub-check lists and notes stay readable.
+- Try the tablet both portrait and landscape.
+- Open the exported CSV and check the R2 names come through intact.
+
+## Phase 1 test on the tablet
 
 1. Open the live page in Chrome on the tablet.
 2. Pick **S1**, enter a name and FF#, tap **Start check**.
