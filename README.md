@@ -31,6 +31,7 @@ Live page: https://firetools604.github.io/truck-inventory/
 | `js/app.js` | App logic: screens, check data, CSV export |
 | `data/trucks.json` | Master list. Short test set for S1 (L1, L2, R1, R2), loaded by default |
 | `data/trucks-full.json` | Full-size test set for S1 (L1 to L4, R1 to R4). Load with `?data=full` |
+| `fonts/` | Bebas Neue, DM Sans, JetBrains Mono (SIL Open Font License). Same fonts as the SCBA tracker, stored here |
 | `images/S1/` | Cabinet photos. Real S1 photos for L1, L2, R1, R2; placeholders for L3, L4, R3, R4 |
 | `scan-test.html` | Phase 0 scanner test page |
 

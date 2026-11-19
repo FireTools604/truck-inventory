@@ -25,6 +25,7 @@ The tablets run on the fire hall Wi-Fi. Dispatch manages their software and OS, 
 | Check data stored on the tablet (localStorage) | No backend for the proof of concept. Same as the SCBA log. |
 | Master list held as sample data in the repo | Final truck contents are still being decided. |
 | Exports pulled from the tablet itself | Getting reports off the device is a later decision. |
+| Look matches the SCBA tracker; fonts stored in the repo | Same look as the other FireTools604 app. Fonts in `fonts/` (SIL Open Font License) instead of Google Fonts, so no external service. |
 
 localStorage belongs to one browser on one tablet. Clearing Chrome's site data wipes the log, and two tablets never see each other's checks. Export after every completed check.
 
@@ -48,6 +49,8 @@ Start check (pick apparatus, name, FF#)
 | Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Tap a photo to see it full screen. Bottom two thirds: the checklist. Cabinet complete button. |
 | Truck summary | Review before closing the check | Not checked cabinets at the top, then outstanding items and low stock, grouped by cabinet. Complete check button. |
 | Log | Past checks on this tablet | Checks listed newest first. Export CSV button. |
+
+**Look** (19 Nov 2026). Matches the SCBA tracker: dark theme, red accent, Bebas Neue headings, DM Sans text, JetBrains Mono for label and check IDs, red primary buttons, status colours green (done, Present, pass), amber (in progress, Low, still to check) and red (Missing, fail). Sizes stay set for a tablet used standing at the truck: 17 px body text, buttons at least 48 px. No link to the SCBA tracker.
 
 **Cabinet checklist.** Every item that belongs in the cabinet is listed with its expected quantity.
 
