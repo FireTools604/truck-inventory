@@ -1,6 +1,6 @@
 # Truck Inventory Check – Project Spec
 
-Last updated 2026-11-18. This file is the master copy of the spec. Every chat in the Truck Inventory Check Project reads it from the repo. The old Claude doc "Truck Inventory Check – Project Spec" is retired and no longer kept up to date.
+Last updated 2026-11-19. This file is the master copy of the spec. Every chat in the Truck Inventory Check Project reads it from the repo. The old Claude doc "Truck Inventory Check – Project Spec" is retired and no longer kept up to date.
 
 ## Purpose and scope
 
@@ -45,7 +45,7 @@ Start check (pick apparatus, name, FF#)
 | --- | --- | --- |
 | Start | Opens a new check | Apparatus buttons (E1, E1-2, R1, S1, T1). Name and FF#. Date and time filled in automatically. |
 | Scanner | Home base for the check | "Scan a cabinet" prompt. List of that apparatus's cabinets showing not started, in progress or done. Manual cabinet pick if a label won't scan. Finish and review button, available any time. |
-| Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Bottom two thirds: the checklist. Cabinet complete button. |
+| Cabinet | Checking one cabinet | Top third: cabinet photos, swiped through (whole cabinet first, then each shelf or drawer). Tap a photo to see it full screen. Bottom two thirds: the checklist. Cabinet complete button. |
 | Truck summary | Review before closing the check | Not checked cabinets at the top, then outstanding items and low stock, grouped by cabinet. Complete check button. |
 | Log | Past checks on this tablet | Checks listed newest first. Export CSV button. |
 
@@ -63,6 +63,12 @@ Start check (pick apparatus, name, FF#)
 - Cabinet complete is allowed once every item has a status. Unchecked items stay highlighted until then.
 - A cabinet can be reopened after it's complete. If a change leaves an item unchecked, the cabinet goes back to in progress.
 - **Kits** (the med kit) are one item with a "Check expiries" sub-check for now. A kit page of its own comes later (see Not in this build).
+
+**Cabinet photos**
+
+- Swipe through them in the strip at the top of the cabinet screen. Caption and "x/y" show which one is up.
+- Tap a photo to open it full screen (decided 19 Nov 2026). Swipe through the cabinet's photos there too. **Minimize**, or the tablet's Back button, returns to the cabinet screen as it was, with the strip on the last photo viewed.
+- The first two photos load when the cabinet opens; the rest load as the crew swipes to them.
 
 **Truck summary** lists:
 
@@ -91,6 +97,12 @@ Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in th
 
 The master list (what should be on each truck) is a JSON file in the repo, `data/trucks.json`, with photos in `images/`. Check results are saved on the tablet.
 
+**Photo files** (set 19 Nov 2026 from the first real S1 photos)
+
+- JPEG, longest side 1600 px, under 300 KB each, no location or camera data. Photos straight off a phone (several MB) get resized before they go in the repo.
+- At that size the 19 S1 photos for L1, L2, R1 and R2 come to about 4 MB, 160 to 290 KB each.
+- Stored in `images/<apparatus>/`. Whole-cabinet shot named for the cabinet (`L1.jpg`), close-ups after it (`L1-Drawer_1.jpg`, `L1-Top_Shelf.jpg`).
+
 **Master list**
 
 | Record | Fields |
@@ -114,7 +126,8 @@ Expected size: up to about 10 items per cabinet and up to 6 sub-checks per item.
 Until the real list exists, there are two test sets for S1:
 
 - `data/trucks.json`, loaded by default: short set for quick runs. 4 cabinets (L1, L2, R1, R2), 14 items, one of each item type.
-- `data/trucks-full.json`, loaded by adding `?data=full` to the address: full-size set from phase 2. 8 cabinets (L1 to L4, R1 to R4), up to 10 items per cabinet, up to 6 sub-checks per item, one to five placeholder photos per cabinet.
+- `data/trucks-full.json`, loaded by adding `?data=full` to the address: full-size set from phase 2. 8 cabinets (L1 to L4, R1 to R4), up to 10 items per cabinet, up to 6 sub-checks per item.
+- Photos: L1, L2, R1 and R2 in both sets use real S1 cabinet photos (3 to 7 per cabinet). L3, L4, R3 and R4 in the full set keep placeholder images. The test items don't match what's in the photos.
 
 The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
 
@@ -148,7 +161,7 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 4. **Scanning in the flow.** Print test QR labels for the test cabinets. Add scan handling. *Done when:* a check on S1 test data is completed by scanning labels only.
 5. **Ready for real data.**
    - Master list template: a spreadsheet, one row per item (apparatus, cabinet, item, type, expected quantity, minimum or restock point, sub-checks), converted to `data/trucks.json`.
-   - Photo rules for whoever takes the cabinet photos (whole cabinet first, then each shelf or drawer; landscape; taken from where the crew stands).
+   - Photo rules for whoever takes the cabinet photos (whole cabinet first, then each shelf or drawer; taken from where the crew stands; file size as under Data model). Portrait or landscape still to settle: the first S1 photos use both.
    - A way to clear or mark test checks so they don't end up in real exports.
    - Crew trial: one or two members run a check on test data and give feedback.
 

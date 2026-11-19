@@ -31,7 +31,7 @@ Live page: https://firetools604.github.io/truck-inventory/
 | `js/app.js` | App logic: screens, check data, CSV export |
 | `data/trucks.json` | Master list. Short test set for S1 (L1, L2, R1, R2), loaded by default |
 | `data/trucks-full.json` | Full-size test set for S1 (L1 to L4, R1 to R4). Load with `?data=full` |
-| `images/S1/` | Cabinet photos. Test placeholders for now |
+| `images/S1/` | Cabinet photos. Real S1 photos for L1, L2, R1, R2; placeholders for L3, L4, R3, R4 |
 | `scan-test.html` | Phase 0 scanner test page |
 
 ## Testing on the tablet
@@ -58,9 +58,9 @@ After an update is merged:
 5. **R2:** leave part done.
 6. **Finish and review:** check Not checked, Outstanding and Low stock.
 7. **Complete check** twice, then **Export CSV**. The `found` column has counts and levels.
-8. Also try: reload Chrome mid-check (the check should resume), and the Android back button (steps back one screen).
+8. Also try: reload Chrome mid-check (the check should resume), and the Android back button (steps back one screen; with a photo full screen it closes the photo).
 
-**Full-size set** covers: L1 and L3 at 10 items, two items with 6 sub-checks, long names, 1 to 5 photos per cabinet, R2 names with inch marks and commas (CSV test), R4 with 2 items and 1 photo.
+**Full-size set** covers: L1 and L3 at 10 items, two items with 6 sub-checks, long names, 1 to 7 photos per cabinet, R2 names with inch marks and commas (CSV test), R4 with 2 items and 1 photo.
 
 ## Data on the tablet
 
