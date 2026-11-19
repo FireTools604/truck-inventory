@@ -32,13 +32,14 @@ Done 19 Nov 2026. Tested on the tablet by Allan (PR #11, app version 2026-11-19a
 - [x] Check load time on the tablet: photos load fine on the fire hall Wi-Fi, which the tablets use.
 - [x] Tablet test and merge.
 
-## Batch 3 – look and feel (next)
+## Batch 3 – look and feel
 
-Decided 19 Nov 2026: match the SCBA tracker's look only. No link between the apps. OK to read `FireTools604/firetrack-scba` for its styles.
+Built 19 Nov 2026 (app version 2026-11-19b). Tablet test pending. Decided 19 Nov 2026: match the SCBA tracker's look only. No link between the apps.
 
-- [ ] Colours and colour scheme.
-- [ ] Button shapes and sizes.
-- [ ] Overall look, matched to the SCBA tracker.
+- [x] Colours and colour scheme: SCBA tracker palette (dark, red accent). Green, amber and red status colours from the same palette.
+- [x] Button shapes and sizes: SCBA rounded buttons, red primary buttons in Bebas Neue. Kept at 48 px or more for the tablet.
+- [x] Overall look, matched to the SCBA tracker: header with red logo tile, Start screen title block, uppercase section labels, cards. Fonts stored in `fonts/`, not loaded from Google.
+- [ ] Tablet test and merge. Check readability in the bay lighting and at arm's length.
 
 ## Backlog
 

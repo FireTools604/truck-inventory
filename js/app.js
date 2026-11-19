@@ -5,7 +5,7 @@
 
   // Bump on every change to app code, together with the ?v= on both tags in index.html,
   // so the tablet loads the new files instead of cached ones.
-  var APP_VERSION = "2026-11-19a";
+  var APP_VERSION = "2026-11-19b";
 
   // ?data=full loads the full-size test data (8 cabinets). Default is the short set for quick runs.
   var DATA_URL = /[?&]data=full(&|$)/.test(location.search) ? "data/trucks-full.json" : "data/trucks.json";
@@ -189,7 +189,7 @@
   }
 
   function bar(title, sub, left, right){
-    return '<header class="bar">' + (left || "") +
+    return '<header class="bar">' + (left || "") + '<div class="logo" aria-hidden="true">🔥</div>' +
       '<div class="bar-title">' + title + (sub ? "<small>" + sub + "</small>" : "") + "</div>" +
       (right ? '<div class="bar-right">' + right + "</div>" : "") + "</header>";
   }
@@ -197,7 +197,10 @@
 
   // ---------- Start ----------
   function renderStart(){
-    var h = '<div class="page">' + bar("Truck Inventory Check", "Agassiz Fire Department") + '<div class="body">';
+    var h = '<div class="page">' + bar("Truck Inventory Check", "Agassiz Fire Department") + '<div class="body">' +
+      '<div class="hero"><div class="badge">Proof of concept</div>' +
+      '<div class="hero-title">Truck<br><em>Inventory</em></div>' +
+      '<div class="hero-desc">Cabinet-by-cabinet apparatus check. Pick the apparatus, enter your name and FF#, then start.</div></div>';
 
     if (active){
       var done = cabinets().filter(function(c){ return cabState(active, c) === "done"; }).length;
@@ -298,7 +301,7 @@
     var cab = cabById(view.cab), res = result(active, cab.id);
     var photos = cab.photos || [];
     var h = '<div class="cab-screen">' +
-      bar("<b>" + esc(cab.code) + "</b> · " + esc(cab.name), esc(active.apparatus.id) + " · " + esc(cab.id),
+      bar("<b>" + esc(cab.code) + "</b> · " + esc(cab.name), esc(active.apparatus.id) + ' · <span class="mono">' + esc(cab.id) + "</span>",
         '<button class="bar-btn" data-act="cab-back">‹ Cabinets</button>', '<span id="cabProg"></span>') +
       '<section class="photos"><div class="strip" id="strip">';
     if (!photos.length) h += '<figure><span class="missing">No photos for this cabinet yet</span></figure>';
@@ -613,7 +616,7 @@
     log.slice().reverse().forEach(function(c){
       var s = summarize(c), o = count(s.outstanding), x = count(s.extra), l = count(s.low);
       h += '<div class="log-item"><div class="top"><span>' + esc(c.apparatus.id) + "</span><span>" + esc(fmtWhen(c.completedAt)) + "</span></div>" +
-        '<div class="who">' + esc(c.name) + " · FF# " + esc(c.ff) + " · " + esc(c.id) + "</div>" +
+        '<div class="who">' + esc(c.name) + " · FF# " + esc(c.ff) + ' · <span class="mono">' + esc(c.id) + "</span></div>" +
         '<div class="chips">' +
         (s.notChecked.length ? '<span class="chip amber">' + plural(s.notChecked.length, "cabinet") + " not checked</span>" : "") +
         '<span class="chip' + (o ? " red" : "") + '">' + o + " outstanding</span>" +
