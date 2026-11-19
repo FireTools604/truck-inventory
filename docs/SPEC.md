@@ -24,7 +24,7 @@ The tablets run on the fire hall Wi-Fi. Dispatch manages their software and OS, 
 | Plain HTML, CSS and JavaScript, no build step, no external services | Easy to host, edit and hand over. Matches the SCBA tracker. |
 | Check data stored on the tablet (localStorage) | No backend for the proof of concept. Same as the SCBA log. |
 | Master list held as sample data in the repo | Final truck contents are still being decided. |
-| Exports pulled from the tablet itself | Getting reports off the device is a later decision. |
+| Exports pulled from the tablet itself | Report summaries reach a phone by QR code (phase 7, decided 19 Nov 2026). Getting the CSV off the tablet is still open. |
 | Tablet held portrait | The scanner reads out of the top short edge. Layouts are built and checked in portrait first (19 Nov 2026). |
 | Look matches the SCBA tracker; fonts stored in the repo | Same look as the other FireTools604 app. Fonts in `fonts/` (SIL Open Font License) instead of Google Fonts, so no external service. |
 
@@ -150,7 +150,7 @@ E1-20261206-0915,2026-12-06,E1,J. Smith,123,AFD-E1-L2,Mixed fuel can,1,50%,Low,,
 - `found` is the count for count items and the level ("50%") for level items. Blank for other items.
 - Extra items from older checks go in the same file with status Extra and the quantity in `found`.
 - Items in cabinets that weren't checked go in with status Not checked.
-- Column set is a starting point. Report format gets settled later.
+- Column set is a starting point. The readable report and PDF come in phase 7.
 
 ## Build phases
 
@@ -174,14 +174,27 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 
    *Done when:* the template is agreed, the photo rules are written, test checks can be cleared and crew trial feedback is in.
 6. **Real data for S1.** After the retrofit: fill in the template, load S1's contents, sub-checks and photos, fit permanent labels. *Done when:* one real duty-weekend check is completed and crew feedback is collected.
-7. **Remaining apparatus.** E1, E1-2, R1, T1: master list, photos and labels for each.
+7. **Reports and QR handoff.** Added 19 Nov 2026. Doesn't need S1's real data, so it can start any time after phase 4.
+   - **Report screen** for a completed check. Opens straight after Complete check, and from any check on the Log screen.
+   - **Report contents:** apparatus, date, start and finish times, name and FF#. Summary counts (cabinets checked and not checked, items missing, low, failed sub-checks). Discrepancies grouped by cabinet: not checked, missing, failed sub-checks, low stock, with notes. Full item list at the end.
+   - **PDF:** made with the browser's own print and a print stylesheet ("Save as PDF" in Chrome's print dialog). No library. Test on the tablet first. If print isn't available there, ask Allan before adding a PDF library.
+   - **QR handoff:** the report screen shows a QR code holding the discrepancy summary. The officer scans it with their own phone and sends it on by text, WhatsApp or email. Nothing installed or signed in on the tablet. Works offline.
+   - QR code generator written into `js/app.js`. No library unless Allan agrees.
+   - **To settle in this phase:**
+     - What the QR code holds: plain text the phone can copy and send, or a link to a report page on the GitHub Pages site with the results carried in the link (the phone opens a formatted report and can save the PDF itself; nothing is sent to a server). A report page is a second page and needs Allan's OK.
+     - Size: the code has to read reliably off the tablet screen with a phone camera. If the summary doesn't fit, split it across numbered codes (1 of 2) or trim it to counts and the first items.
+     - Test with the phones the crew actually carry (Android and iPhone camera apps handle text codes differently).
+
+   *Done when:* after a completed check on test data, the report shows on the tablet, saves as a PDF, and the summary reaches a phone by QR scan and is sent on from it.
+8. **Remaining apparatus.** E1, E1-2, R1, T1: master list, photos and labels for each.
 
 ## Not in this build
 
 - SPU equipment and trailer.
 - Barcodes or tags on individual items.
 - Sharing data between tablets, or a central database.
-- Report formats beyond the CSV log.
+- Report formats beyond the CSV log, the report screen and its PDF (phase 7).
+- Sending reports automatically (email, WhatsApp, push alerts). Options looked at 19 Nov 2026: share to Gmail or WhatsApp from the tablet (needs an account signed in on the tablet), a Google Apps Script relay to email it and file it in Drive or a Sheet, and push alerts through ntfy or Teams. QR handoff chosen for now. Revisit after phase 7.
 - First Due, FireTrack, the SCBA tracker and the clothing inventory.
 - Phones, iOS and laptops.
 - Logins or user accounts. Name and FF# are entered per check.
@@ -197,7 +210,8 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 - [x] Can a truck be completed with cabinets unchecked? Yes. Finish and review is available any time; unchecked cabinets show at the top of the truck summary as "Not checked" (decided 18 Nov 2026)
 - [ ] Label material and printing (laminated, like the SPU bin labels?)
 - [ ] Who takes the cabinet and shelf photos
-- [ ] How exported CSVs get off the tablet
+- [ ] How exported CSVs get off the tablet. Report summaries go by QR code (phase 7); the full CSV is still open.
+- [ ] What the report QR code holds: plain text or a link to a report page (settle in phase 7)
 - [ ] Dispatcher OK to use the tablets on duty weekends
 - [ ] Med kit master list (by bag compartment) and expiry tracker: scope later
 - [x] Tablet held portrait or landscape at the truck? Portrait (decided 19 Nov 2026). The scanner reads out of the top short edge, so the crew holds it upright. Screens are laid out for portrait; landscape still works but shows only about two items under the photos.
