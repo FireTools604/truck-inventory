@@ -16,7 +16,7 @@ Live page: https://firetools604.github.io/truck-inventory/
 | 0. Scanner test | Done 17 Nov 2026 |
 | 1. Click-through prototype, sample data for S1 | Done 18 Nov 2026 |
 | 2. Test data sized to the real truck | Done 18 Nov 2026 |
-| 3. UI refinement | In progress. Work list: [`docs/PHASE3.md`](docs/PHASE3.md) |
+| 3. UI refinement | Done 19 Nov 2026. Record: [`docs/PHASE3.md`](docs/PHASE3.md) |
 | 4. Scanning in the flow, test QR labels | |
 | 5. Ready for real data: template, photo rules, clear test checks, crew trial | |
 | 6. Real data for S1 after the retrofit, first duty-weekend check | |
@@ -32,7 +32,7 @@ Live page: https://firetools604.github.io/truck-inventory/
 | `data/trucks.json` | Master list. Short test set for S1 (L1, L2, R1, R2), loaded by default |
 | `data/trucks-full.json` | Full-size test set for S1 (L1 to L4, R1 to R4). Load with `?data=full` |
 | `fonts/` | Bebas Neue, DM Sans, JetBrains Mono (SIL Open Font License). Same fonts as the SCBA tracker, stored here |
-| `images/S1/` | Cabinet photos. Real S1 photos for L1, L2, R1, R2; placeholders for L3, L4, R3, R4 |
+| `images/S1/` | Cabinet photos. L1, L2, R1, R2: sample photos from several AFD trucks (not S1's, replaced with the real data). L3, L4, R3, R4: placeholders |
 | `scan-test.html` | Phase 0 scanner test page |
 
 ## Testing on the tablet

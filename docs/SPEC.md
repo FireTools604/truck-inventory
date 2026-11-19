@@ -25,6 +25,7 @@ The tablets run on the fire hall Wi-Fi. Dispatch manages their software and OS, 
 | Check data stored on the tablet (localStorage) | No backend for the proof of concept. Same as the SCBA log. |
 | Master list held as sample data in the repo | Final truck contents are still being decided. |
 | Exports pulled from the tablet itself | Getting reports off the device is a later decision. |
+| Tablet held portrait | The scanner reads out of the top short edge. Layouts are built and checked in portrait first (19 Nov 2026). |
 | Look matches the SCBA tracker; fonts stored in the repo | Same look as the other FireTools604 app. Fonts in `fonts/` (SIL Open Font License) instead of Google Fonts, so no external service. |
 
 localStorage belongs to one browser on one tablet. Clearing Chrome's site data wipes the log, and two tablets never see each other's checks. Export after every completed check.
@@ -100,10 +101,10 @@ Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in th
 
 The master list (what should be on each truck) is a JSON file in the repo, `data/trucks.json`, with photos in `images/`. Check results are saved on the tablet.
 
-**Photo files** (set 19 Nov 2026 from the first real S1 photos)
+**Photo files** (set 19 Nov 2026 from the first sample photos)
 
 - JPEG, longest side 1600 px, under 300 KB each, no location or camera data. Photos straight off a phone (several MB) get resized before they go in the repo.
-- At that size the 19 S1 photos for L1, L2, R1 and R2 come to about 4 MB, 160 to 290 KB each.
+- At that size the 19 sample photos come to about 4 MB, 160 to 290 KB each.
 - Stored in `images/<apparatus>/`. Whole-cabinet shot named for the cabinet (`L1.jpg`), close-ups after it (`L1-Drawer_1.jpg`, `L1-Top_Shelf.jpg`).
 
 **Master list**
@@ -130,7 +131,7 @@ Until the real list exists, there are two test sets for S1:
 
 - `data/trucks.json`, loaded by default: short set for quick runs. 4 cabinets (L1, L2, R1, R2), 14 items, one of each item type.
 - `data/trucks-full.json`, loaded by adding `?data=full` to the address: full-size set from phase 2. 8 cabinets (L1 to L4, R1 to R4), up to 10 items per cabinet, up to 6 sub-checks per item.
-- Photos: L1, L2, R1 and R2 in both sets use real S1 cabinet photos (3 to 7 per cabinet). L3, L4, R3 and R4 in the full set keep placeholder images. The test items don't match what's in the photos.
+- Photos: L1, L2, R1 and R2 in both sets use real AFD cabinet photos (3 to 7 per cabinet), filed under `images/S1/`. They are samples taken from several trucks, picked because they had good multi-photo sets. They are not S1's cabinets. Allan supplies S1's own photos when the real data goes in (phase 6). L3, L4, R3 and R4 in the full set keep placeholder images. The test items don't match what's in the photos.
 
 The real list gets loaded once truck contents are finalized. Each check keeps a copy of the apparatus's master list from when it started, so editing `data/trucks.json` mid-check doesn't break it.
 
@@ -160,11 +161,14 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 0. **Scanner test** – done 17 Nov 2026. Scans reach a web page in Chrome with no device changes.
 1. **Click-through prototype** – done 18 Nov 2026. All five screens working with sample data for S1 (cabinets L1, L2, R1, R2, placeholder photos). Cabinets picked by hand. Start to Log runs and the CSV exports.
 2. **Test data sized to the real truck** – done 18 Nov 2026. Replace the S1 sample data with test cabinets at the expected size: up to 10 items per cabinet, items with up to 6 sub-checks, long item names, several photos per cabinet, and a med kit as one item with a "Check expiries" sub-check. *Done when:* every screen works at that size on the tablet.
-3. **UI refinement.** Run checks on the test data and fix layout, wording, button size and flow. Work list and batches in `docs/PHASE3.md`. *Done when:* Allan signs off the flow on the tablet.
+3. **UI refinement** – done 19 Nov 2026, signed off by Allan. Short test set, sub-check collapse, count and level consumables, real sample photos with tap for full screen, SCBA tracker look, tablet held portrait. Record of the batches in `docs/PHASE3.md`. Cosmetic changes may be revisited once the project is done.
 4. **Scanning in the flow.** Print test QR labels for the test cabinets. Add scan handling. *Done when:* a check on S1 test data is completed by scanning labels only.
+   - Scans only count on the Scanner screen (see Cabinet labels and scanning). Test that a stray scan on the cabinet screen or a full-screen photo does nothing.
+   - The hidden scan field must have focus again whenever the Scanner screen shows, including after typing a name or a count elsewhere.
 5. **Ready for real data.**
    - Master list template: a spreadsheet, one row per item (apparatus, cabinet, item, type, expected quantity, minimum or restock point, sub-checks), converted to `data/trucks.json`.
-   - Photo rules for whoever takes the cabinet photos (whole cabinet first, then each shelf or drawer; taken from where the crew stands; file size as under Data model). Portrait or landscape still to settle: the first S1 photos use both.
+   - Photo rules for whoever takes the cabinet photos (whole cabinet first, then each shelf or drawer; taken from where the crew stands; file size as under Data model). Portrait or landscape photos still to settle: with the tablet held portrait, the photo strip is wide and short, so landscape photos fill it and tall portrait shots (whole cabinet of a tall compartment) show narrow. Full screen shows either well.
+   - Real minimums and restock points per item, set in the template.
    - A way to clear or mark test checks so they don't end up in real exports.
    - Crew trial: one or two members run a check on test data and give feedback.
 
@@ -196,5 +200,5 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 - [ ] How exported CSVs get off the tablet
 - [ ] Dispatcher OK to use the tablets on duty weekends
 - [ ] Med kit master list (by bag compartment) and expiry tracker: scope later
-- [ ] Tablet held portrait or landscape at the truck? In landscape the cabinet screen shows about two items under the photos. Settle in phase 3.
+- [x] Tablet held portrait or landscape at the truck? Portrait (decided 19 Nov 2026). The scanner reads out of the top short edge, so the crew holds it upright. Screens are laid out for portrait; landscape still works but shows only about two items under the photos.
 - [ ] Log size: one completed check at test size is about 14 KB in localStorage. Chrome allows about 5 MB per site, and every FireTools604 page on GitHub Pages shares that site's storage. Decide in phase 5 whether to prune exported checks.
