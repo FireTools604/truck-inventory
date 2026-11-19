@@ -1,5 +1,5 @@
 {
-  "version": "test-short-2026-11-18",
+  "version": "test-short-2026-11-19",
   "note": "SHORT TEST DATA (4 cabinets) for quick runs. Full-size test data: add ?data=full to the address. Not the real S1 contents.",
   "apparatus": [
     {
@@ -26,9 +26,13 @@
           "code": "L1",
           "name": "Driver side 1",
           "photos": [
-            { "src": "images/S1/L1-1.svg", "caption": "Whole cabinet" },
-            { "src": "images/S1/L1-2.svg", "caption": "Top shelf" },
-            { "src": "images/S1/L1-3.svg", "caption": "Middle shelf" }
+            { "src": "images/S1/L1.jpg", "caption": "Whole cabinet" },
+            { "src": "images/S1/L1-Top_Shelf.jpg", "caption": "Top shelf" },
+            { "src": "images/S1/L1-Mid_Shelf.jpg", "caption": "Middle shelf" },
+            { "src": "images/S1/L1-Drawer_1.jpg", "caption": "Drawer 1" },
+            { "src": "images/S1/L1-Drawer_2.jpg", "caption": "Drawer 2" },
+            { "src": "images/S1/L1-Drawer_3.jpg", "caption": "Drawer 3" },
+            { "src": "images/S1/L1-Drawer_4.jpg", "caption": "Drawer 4" }
           ],
           "items": [
             {
@@ -54,8 +58,9 @@
           "code": "L2",
           "name": "Driver side 2",
           "photos": [
-            { "src": "images/S1/L2-1.svg", "caption": "Whole cabinet" },
-            { "src": "images/S1/L2-2.svg", "caption": "Slide-out tray" }
+            { "src": "images/S1/L2-Front.jpg", "caption": "Front" },
+            { "src": "images/S1/L2-Back_1.jpg", "caption": "Back 1" },
+            { "src": "images/S1/L2-Back_2.jpg", "caption": "Back 2" }
           ],
           "items": [
             { "id": "floor-dry", "name": "Floor dry (bags)", "type": "count", "qty": 4, "min": 2, "subchecks": [] },
@@ -68,8 +73,9 @@
           "code": "R1",
           "name": "Passenger side 1",
           "photos": [
-            { "src": "images/S1/R1-1.svg", "caption": "Whole cabinet" },
-            { "src": "images/S1/R1-2.svg", "caption": "Top shelf" }
+            { "src": "images/S1/R1.jpg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R1-Slide_Side_1.jpg", "caption": "Slide, side 1" },
+            { "src": "images/S1/R1-Slide_Side_2.jpg", "caption": "Slide, side 2" }
           ],
           "items": [
             {
@@ -98,7 +104,12 @@
           "code": "R2",
           "name": "Passenger side 2",
           "photos": [
-            { "src": "images/S1/R2-1.svg", "caption": "Whole cabinet" }
+            { "src": "images/S1/R2.jpg", "caption": "Whole cabinet" },
+            { "src": "images/S1/R2-Top_Shelf.jpg", "caption": "Top shelf" },
+            { "src": "images/S1/R2-Left_Top_Shelf.jpg", "caption": "Left top shelf" },
+            { "src": "images/S1/R2-Left_Mid_Shelf.jpg", "caption": "Left middle shelf" },
+            { "src": "images/S1/R2-Left_Btm_Shelf.jpg", "caption": "Left bottom shelf" },
+            { "src": "images/S1/R2-Apt_Pack.jpg", "caption": "Apartment pack" }
           ],
           "items": [
             {

@@ -22,13 +22,15 @@ Done 18 Nov 2026. Tested on the tablet by Allan (PR #8, cache fix PR #9, app ver
 - [x] Add extra item removed for now.
 - [x] Tablet test and merge.
 
-## Batch 2 – photos (next)
+## Batch 2 – photos
 
-Needs from Allan: 3 to 6 real cabinet photos (any truck), taken the way the crew should see them.
+Built 19 Nov 2026 (app version 2026-11-19a). Tablet test pending. Photos from Allan: 19 of S1, cabinets L1, L2, R1 and R2.
 
-- [ ] Load real photos into the test data. Check how they look in the photo strip, portrait and landscape.
-- [ ] Check load time and file size on the tablet. Set a size limit for photos (feeds the phase 5 photo rules).
-- [ ] Decide: tap a photo to see it full screen?
+- [x] Load real photos into the test data. L1, L2, R1 and R2 in both sets. Checked in the photo strip, portrait and landscape, in a desktop browser at tablet size.
+- [x] Set a size limit for photos: JPEG, longest side 1600 px, under 300 KB. In `docs/SPEC.md`; feeds the phase 5 photo rules.
+- [x] Tap a photo to see it full screen: yes. Swipe through the cabinet's photos; Minimize or Back returns to the cabinet screen on the last photo viewed.
+- [ ] Check load time on the tablet: open L1 (7 photos, about 1.6 MB) on the dispatcher's Wi-Fi and on cell data if the tablet has it.
+- [ ] Tablet test and merge.
 
 ## Batch 3 – look and feel
 
@@ -42,5 +44,6 @@ Needs from Allan: match the SCBA tracker's look only, or also link the two apps?
 
 - [ ] Real minimums and restock points per item, once S1's items are known.
 - [ ] Portrait or landscape at the truck (spec open item).
-- [ ] Placeholder photos say "Test photo 1 of 4" where the short set has 3. Cosmetic; goes away with real photos.
 - [ ] For phase 4: typing a count opens the keyboard and takes focus from the hidden scan field. Scan handling has to take focus back after typing.
+- [ ] For phase 4: a scan while a photo is full screen has to close it first, then handle the scan.
+- [ ] For phase 5: photo rules say landscape, but tall cabinets (L1, R2) were taken portrait and look narrow in the strip. Settle portrait or landscape per cabinet type.

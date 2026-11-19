@@ -5,7 +5,7 @@
 
   // Bump on every change to app code, together with the ?v= on both tags in index.html,
   // so the tablet loads the new files instead of cached ones.
-  var APP_VERSION = "2026-11-18b";
+  var APP_VERSION = "2026-11-19a";
 
   // ?data=full loads the full-size test data (8 cabinets). Default is the short set for quick runs.
   var DATA_URL = /[?&]data=full(&|$)/.test(location.search) ? "data/trucks-full.json" : "data/trucks.json";
@@ -170,12 +170,19 @@
     window.scrollTo(0, 0);
   }
   window.addEventListener("popstate", function(e){
-    view = e.state && e.state.screen ? e.state : { screen: "start", cab: null };
+    var st = e.state && e.state.screen ? e.state : { screen: "start", cab: null };
+    if (viewer){
+      var sameCab = st.screen === "cabinet" && st.cab === view.cab && !st.photos;
+      closeViewer();
+      if (sameCab) return;   // Minimize or Back from full-screen photos: cabinet screen stays as it was
+    }
+    view = { screen: st.screen, cab: st.cab || null };
     render();
   });
 
   function render(){
     clearInterval(clockTimer);
+    closeViewer();
     if (!active && /^(scanner|cabinet|summary)$/.test(view.screen)) view = { screen: "start", cab: null };
     if (view.screen === "cabinet" && !cabById(view.cab)) view = { screen: "scanner", cab: null };
     ({ start: renderStart, scanner: renderScanner, cabinet: renderCabinet, summary: renderSummary, log: renderLog }[view.screen] || renderStart)();
@@ -295,9 +302,12 @@
         '<button class="bar-btn" data-act="cab-back">‹ Cabinets</button>', '<span id="cabProg"></span>') +
       '<section class="photos"><div class="strip" id="strip">';
     if (!photos.length) h += '<figure><span class="missing">No photos for this cabinet yet</span></figure>';
+    // First two photos load straight away, the rest as the crew swipes to them.
     photos.forEach(function(p, i){
-      h += '<figure><img src="' + esc(p.src) + '" alt="' + esc(cab.code + " " + (p.caption || "")) + '" draggable="false">' +
-        "<figcaption>" + esc(p.caption || "Photo") + " · " + (i + 1) + "/" + photos.length + "</figcaption></figure>";
+      h += '<figure data-i="' + i + '"><img src="' + esc(p.src) + '" alt="' + esc(cab.code + " " + (p.caption || "")) + '" draggable="false" decoding="async"' +
+        (i > 1 ? ' loading="lazy"' : "") + ">" +
+        "<figcaption>" + esc(p.caption || "Photo") + " · " + (i + 1) + "/" + photos.length + "</figcaption>" +
+        '<span class="zoom-hint" aria-hidden="true">' + ZOOM_ICON + "</span></figure>";
     });
     h += '</div><div class="dots" id="dots">' + (photos.length > 1 ? photos.map(function(_, i){ return '<span class="' + (i ? "" : "on") + '"></span>'; }).join("") : "") + "</div></section>" +
       '<section class="list" id="list">';
@@ -313,11 +323,97 @@
     }, { passive: true });
     Array.prototype.forEach.call(strip.querySelectorAll("img"), function(img){
       img.addEventListener("error", function(){
+        var hint = img.parentNode.querySelector(".zoom-hint");
+        if (hint) hint.remove();
         var s = document.createElement("span"); s.className = "missing"; s.textContent = "Photo not found";
         img.replaceWith(s);
       });
     });
+    // Tap a photo to see it full screen. A swipe doesn't fire click, so this only catches taps.
+    strip.addEventListener("click", function(e){
+      var f = e.target.closest("figure[data-i]");
+      if (f && f.querySelector("img")) openViewer(cab, +f.dataset.i);
+    });
     updateCabFooter();
+  }
+
+  // ---------- full-screen photos ----------
+  // Opens over the cabinet screen. Swipe between the cabinet's photos. Minimize (or the tablet's Back)
+  // returns to the cabinet screen as it was, with the strip on the last photo viewed.
+  var ZOOM_ICON = '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="#fff" stroke-width="2.4"/></svg>';
+  var viewer = null;   // { el, strip, cap, dots, cab, cur, pushed }
+
+  function openViewer(cab, start){
+    closeViewer();
+    var photos = cab.photos || [];
+    var h = '<div class="vw-top"><div class="vw-cap" id="vwCap"></div>' +
+      '<button class="vw-min" data-vw="min">Minimize</button></div><div class="vw-body"><div class="vw-strip">';
+    photos.forEach(function(p){
+      h += '<figure><img src="' + esc(p.src) + '" alt="' + esc(cab.code + " " + (p.caption || "")) + '" draggable="false" decoding="async"></figure>';
+    });
+    h += '</div><div class="dots">' + (photos.length > 1 ? photos.map(function(){ return "<span></span>"; }).join("") : "") + "</div></div>";
+    var el = document.createElement("div");
+    el.className = "viewer";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-label", cab.code + " photos");
+    el.innerHTML = h;
+    document.body.appendChild(el);
+
+    viewer = { el: el, strip: el.querySelector(".vw-strip"), cap: el.querySelector(".vw-cap"),
+      dots: el.querySelector(".dots").children, cab: cab, cur: -1, pushed: false };
+    viewer.strip.scrollLeft = start * viewer.strip.clientWidth;
+    showViewerPhoto(start);
+
+    viewer.strip.addEventListener("scroll", function(){
+      if (!viewer) return;
+      showViewerPhoto(Math.round(viewer.strip.scrollLeft / Math.max(1, viewer.strip.clientWidth)));
+    }, { passive: true });
+    Array.prototype.forEach.call(viewer.strip.querySelectorAll("img"), function(img){
+      img.addEventListener("error", function(){
+        var s = document.createElement("span"); s.className = "missing"; s.textContent = "Photo not found";
+        img.replaceWith(s);
+      });
+    });
+    el.querySelector("[data-vw=min]").addEventListener("click", minimizeViewer);
+    window.addEventListener("resize", alignViewer);
+    document.addEventListener("keydown", viewerKey);
+
+    // History entry so the tablet's Back button closes the photo instead of leaving the cabinet.
+    try { history.pushState({ screen: "cabinet", cab: view.cab, photos: true }, ""); viewer.pushed = true; } catch(e){}
+  }
+
+  function showViewerPhoto(i){
+    var photos = viewer.cab.photos || [];
+    i = Math.max(0, Math.min(photos.length - 1, i));
+    if (i === viewer.cur) return;
+    viewer.cur = i;
+    var p = photos[i] || {};
+    viewer.cap.textContent = viewer.cab.code + " · " + (p.caption || "Photo") + " · " + (i + 1) + "/" + photos.length;
+    for (var k = 0; k < viewer.dots.length; k++) viewer.dots[k].className = k === i ? "on" : "";
+  }
+
+  // Keep the same photo in view when the tablet is turned.
+  function alignViewer(){
+    if (viewer) viewer.strip.scrollLeft = viewer.cur * viewer.strip.clientWidth;
+  }
+
+  function viewerKey(e){ if (e.key === "Escape") minimizeViewer(); }
+
+  function minimizeViewer(){
+    if (!viewer) return;
+    if (viewer.pushed) history.back();   // popstate closes it
+    else closeViewer();
+  }
+
+  function closeViewer(){
+    if (!viewer) return;
+    var cur = viewer.cur;
+    viewer.el.remove();
+    window.removeEventListener("resize", alignViewer);
+    document.removeEventListener("keydown", viewerKey);
+    viewer = null;
+    var strip = document.getElementById("strip");
+    if (strip && cur > 0) strip.scrollLeft = cur * strip.clientWidth;
   }
 
   function noteBtn(r){ return '<button class="note-btn' + (r.note ? " has" : "") + '" data-act="note">Note</button>'; }
