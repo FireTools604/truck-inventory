@@ -1,6 +1,6 @@
 # Truck Inventory Check
 
-Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department, run on the dispatcher's Zebra ET40/ET45 tablets using their built-in scanner.
+Cabinet-by-cabinet apparatus inventory check for Agassiz Fire Department, run on the department's Zebra ET40/ET45 tablets (software and OS managed by dispatch) using their built-in scanner.
 
 Live page: https://firetools604.github.io/truck-inventory/
 

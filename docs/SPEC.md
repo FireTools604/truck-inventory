@@ -9,12 +9,12 @@ A standalone web app that walks a crew through a full apparatus inventory check,
 - **Apparatus:** E1, E1-2, R1, S1, T1. SPU excluded for now.
 - **Codes:** cabinets get a QR label. Individual items do not.
 - **Frequency:** every 5 weeks, during the duty weekend.
-- **Standalone:** no link to the SCBA tracker, the clothing inventory or FireTrack. Integration can come later.
+- **Standalone:** no link to the SCBA tracker, the clothing inventory or FireTrack. Integration gets looked at once the app is deployed, tested and has buy-in from the floor (19 Nov 2026). Matching the SCBA tracker's look is fine.
 - **Proof of concept is done when:** a crew member can run a full check on one apparatus on the tablet, from start screen to truck summary, by scanning real cabinet labels, and export the log.
 
 ## Constraints and decisions
 
-The tablet belongs to the dispatcher, so the whole app has to work in Chrome with no installs and no device settings changed.
+The tablets run on the fire hall Wi-Fi. Dispatch manages their software and OS, so any change to the device goes through them. The whole app has to work in Chrome with no installs and no device settings changed.
 
 | Decision | Reason |
 | --- | --- |
