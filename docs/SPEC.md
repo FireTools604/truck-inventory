@@ -9,12 +9,12 @@ A standalone web app that walks a crew through a full apparatus inventory check,
 - **Apparatus:** E1, E1-2, R1, S1, T1. SPU excluded for now.
 - **Codes:** cabinets get a QR label. Individual items do not.
 - **Frequency:** every 5 weeks, during the duty weekend.
-- **Standalone:** no link to the SCBA tracker, the clothing inventory or FireTrack. Integration can come later.
+- **Standalone:** no link to the SCBA tracker, the clothing inventory or FireTrack. Integration gets looked at once the app is deployed, tested and has buy-in from the floor (19 Nov 2026). Matching the SCBA tracker's look is fine.
 - **Proof of concept is done when:** a crew member can run a full check on one apparatus on the tablet, from start screen to truck summary, by scanning real cabinet labels, and export the log.
 
 ## Constraints and decisions
 
-The tablet belongs to the dispatcher, so the whole app has to work in Chrome with no installs and no device settings changed.
+The tablets run on the fire hall Wi-Fi. Dispatch manages their software and OS, so any change to the device goes through them. The whole app has to work in Chrome with no installs and no device settings changed.
 
 | Decision | Reason |
 | --- | --- |
@@ -90,8 +90,8 @@ Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in th
 
 - A hidden text field keeps focus so DataWedge can type into it. The on-screen keyboard stays hidden (`inputmode="none"`).
 - A scan is complete on Enter or Tab, or after a short pause (about 250 ms) if DataWedge sends neither. `scan-test.html` already does this.
-- Scanning a cabinet label opens that cabinet's screen.
-- Scan while on a cabinet screen: if it's the same cabinet, nothing happens. If it's a different cabinet, ask before leaving the current one.
+- Scans are only taken on the Scanner screen (cabinet select). Scanning a cabinet label there opens that cabinet's screen.
+- A scan on any other screen, including the cabinet screen and full-screen photos, is ignored (decided 19 Nov 2026). The hidden scan field only needs focus on the Scanner screen.
 
 ## Data model
 

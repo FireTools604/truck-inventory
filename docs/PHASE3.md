@@ -24,17 +24,17 @@ Done 18 Nov 2026. Tested on the tablet by Allan (PR #8, cache fix PR #9, app ver
 
 ## Batch 2 – photos
 
-Built 19 Nov 2026 (app version 2026-11-19a). Tablet test pending. Photos from Allan: 19 of S1, cabinets L1, L2, R1 and R2.
+Done 19 Nov 2026. Tested on the tablet by Allan (PR #11, app version 2026-11-19a). Photos from Allan: 19 of S1, cabinets L1, L2, R1 and R2.
 
 - [x] Load real photos into the test data. L1, L2, R1 and R2 in both sets. Checked in the photo strip, portrait and landscape, in a desktop browser at tablet size.
 - [x] Set a size limit for photos: JPEG, longest side 1600 px, under 300 KB. In `docs/SPEC.md`; feeds the phase 5 photo rules.
 - [x] Tap a photo to see it full screen: yes. Swipe through the cabinet's photos; Minimize or Back returns to the cabinet screen on the last photo viewed.
-- [ ] Check load time on the tablet: open L1 (7 photos, about 1.6 MB) on the dispatcher's Wi-Fi and on cell data if the tablet has it.
-- [ ] Tablet test and merge.
+- [x] Check load time on the tablet: photos load fine on the fire hall Wi-Fi, which the tablets use.
+- [x] Tablet test and merge.
 
-## Batch 3 – look and feel
+## Batch 3 – look and feel (next)
 
-Needs from Allan: match the SCBA tracker's look only, or also link the two apps? (Spec says standalone.) OK to read the `FireTools604/firetrack-scba` repo for its styles.
+Decided 19 Nov 2026: match the SCBA tracker's look only. No link between the apps. OK to read `FireTools604/firetrack-scba` for its styles.
 
 - [ ] Colours and colour scheme.
 - [ ] Button shapes and sizes.
@@ -44,6 +44,5 @@ Needs from Allan: match the SCBA tracker's look only, or also link the two apps?
 
 - [ ] Real minimums and restock points per item, once S1's items are known.
 - [ ] Portrait or landscape at the truck (spec open item).
-- [ ] For phase 4: typing a count opens the keyboard and takes focus from the hidden scan field. Scan handling has to take focus back after typing.
-- [ ] For phase 4: a scan while a photo is full screen has to close it first, then handle the scan.
+- [ ] For phase 4: scans only count on the Scanner screen (decided 19 Nov 2026). Test that a stray scan on the cabinet screen or a full-screen photo does nothing, and that the scan field has focus again on returning to the Scanner screen.
 - [ ] For phase 5: photo rules say landscape, but tall cabinets (L1, R2) were taken portrait and look narrow in the strip. Settle portrait or landscape per cabinet type.
