@@ -24,7 +24,7 @@ The tablets run on the fire hall Wi-Fi. Dispatch manages their software and OS, 
 | Plain HTML, CSS and JavaScript, no build step, no external services | Easy to host, edit and hand over. Matches the SCBA tracker. |
 | Check data stored on the tablet (localStorage) | No backend for the proof of concept. Same as the SCBA log. |
 | Master list held as sample data in the repo | Final truck contents are still being decided. |
-| Exports pulled from the tablet itself | Report summaries reach a phone by QR code (phase 7, decided 19 Nov 2026). Getting the CSV off the tablet is still open. |
+| Exports pulled from the tablet itself | The check summary goes by QR code to a phone and on to the Truck Checks WhatsApp group (phase 7, decided 19 Nov 2026). Getting the CSV and PDF off the tablet is still open. |
 | Tablet held portrait | The scanner reads out of the top short edge. Layouts are built and checked in portrait first (19 Nov 2026). |
 | Look matches the SCBA tracker; fonts stored in the repo | Same look as the other FireTools604 app. Fonts in `fonts/` (SIL Open Font License) instead of Google Fonts, so no external service. |
 
@@ -178,14 +178,32 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
    - **Report screen** for a completed check. Opens straight after Complete check, and from any check on the Log screen.
    - **Report contents:** apparatus, date, start and finish times, name and FF#. Summary counts (cabinets checked and not checked, items missing, low, failed sub-checks). Discrepancies grouped by cabinet: not checked, missing, failed sub-checks, low stock, with notes. Full item list at the end.
    - **PDF:** made with the browser's own print and a print stylesheet ("Save as PDF" in Chrome's print dialog). No library. Test on the tablet first. If print isn't available there, ask Allan before adding a PDF library.
-   - **QR handoff:** the report screen shows a QR code holding the discrepancy summary. The officer scans it with their own phone and sends it on by text, WhatsApp or email. Nothing installed or signed in on the tablet. Works offline.
-   - QR code generator written into `js/app.js`. No library unless Allan agrees.
-   - **To settle in this phase:**
-     - What the QR code holds: plain text the phone can copy and send, or a link to a report page on the GitHub Pages site with the results carried in the link (the phone opens a formatted report and can save the PDF itself; nothing is sent to a server). A report page is a second page and needs Allan's OK.
-     - Size: the code has to read reliably off the tablet screen with a phone camera. If the summary doesn't fit, split it across numbered codes (1 of 2) or trim it to counts and the first items.
-     - Test with the phones the crew actually carry (Android and iPhone camera apps handle text codes differently).
+   - **QR handoff** (decided 19 Nov 2026): the report screen shows a QR code holding a plain-text summary. The crew member scans it with their own phone and posts it to the **Truck Checks** WhatsApp group. Nothing installed or signed in on the tablet. Works offline. The PDF stays on the tablet; it isn't sent through the QR code.
+   - **QR message.** No issues means every cabinet checked, nothing missing, no failed sub-checks and no low stock. Anything else is listed, one line each, not-checked cabinets first.
 
-   *Done when:* after a completed check on test data, the report shows on the tablet, saves as a PDF, and the summary reaches a phone by QR scan and is sent on from it.
+     ```
+     S1 Truck Check Complete – No issues
+     2026-12-06 09:15 · J. Smith (123)
+     ```
+
+     ```
+     S1 Truck Check Complete – 4 issues
+     2026-12-06 09:15 · J. Smith (123)
+     Not checked: R4
+     R1 Halligan – Missing
+     L2 Chainsaw – Failed: Chain tension (Chain loose)
+     L2 Floor dry – Low, 1 of 4
+     ```
+
+     Wording is a draft to settle on the tablet.
+   - **Long lists:** if the message is too long for a code that reads reliably off the tablet screen, it ends with "+ N more – see report on tablet".
+   - QR code generator written into `js/app.js`. No library unless Allan agrees.
+   - **To test in this phase:**
+     - Scan with the phones the crew actually carry. Android and iPhone camera apps handle text codes differently (copy, share, or search).
+     - Try the code as a WhatsApp link (`https://wa.me/?text=…`) as well as plain text. Scanning the link opens WhatsApp with the message filled in, so the crew only picks Truck Checks and taps Send. It makes the code denser, so check it still reads. Keep whichever takes fewer steps.
+   - **Outside the app:** Allan sets up the Truck Checks group and adds the crew.
+
+   *Done when:* after a completed check on test data, the report shows on the tablet, saves as a PDF, and the QR message is scanned to a phone and posted to the Truck Checks group.
 8. **Remaining apparatus.** E1, E1-2, R1, T1: master list, photos and labels for each.
 
 ## Not in this build
@@ -210,8 +228,8 @@ S1 is waiting on its retrofit, so its real master list doesn't exist yet. Phases
 - [x] Can a truck be completed with cabinets unchecked? Yes. Finish and review is available any time; unchecked cabinets show at the top of the truck summary as "Not checked" (decided 18 Nov 2026)
 - [ ] Label material and printing (laminated, like the SPU bin labels?)
 - [ ] Who takes the cabinet and shelf photos
-- [ ] How exported CSVs get off the tablet. Report summaries go by QR code (phase 7); the full CSV is still open.
-- [ ] What the report QR code holds: plain text or a link to a report page (settle in phase 7)
+- [ ] How exported CSVs and the PDF get off the tablet. The check summary goes to the Truck Checks WhatsApp group by QR code (phase 7); the files are still open.
+- [x] What the report QR code holds: a plain-text summary, posted to the Truck Checks WhatsApp group (decided 19 Nov 2026)
 - [ ] Dispatcher OK to use the tablets on duty weekends
 - [ ] Med kit master list (by bag compartment) and expiry tracker: scope later
 - [x] Tablet held portrait or landscape at the truck? Portrait (decided 19 Nov 2026). The scanner reads out of the top short edge, so the crew holds it upright. Screens are laid out for portrait; landscape still works but shows only about two items under the photos.
