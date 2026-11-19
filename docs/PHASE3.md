@@ -44,6 +44,5 @@ Needs from Allan: match the SCBA tracker's look only, or also link the two apps?
 
 - [ ] Real minimums and restock points per item, once S1's items are known.
 - [ ] Portrait or landscape at the truck (spec open item).
-- [ ] For phase 4: typing a count opens the keyboard and takes focus from the hidden scan field. Scan handling has to take focus back after typing.
-- [ ] For phase 4: a scan while a photo is full screen has to close it first, then handle the scan.
+- [ ] For phase 4: scans only count on the Scanner screen (decided 19 Nov 2026). Test that a stray scan on the cabinet screen or a full-screen photo does nothing, and that the scan field has focus again on returning to the Scanner screen.
 - [ ] For phase 5: photo rules say landscape, but tall cabinets (L1, R2) were taken portrait and look narrow in the strip. Settle portrait or landscape per cabinet type.

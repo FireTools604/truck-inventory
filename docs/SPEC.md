@@ -90,8 +90,8 @@ Each cabinet gets one QR label holding a fixed ID. The app looks the ID up in th
 
 - A hidden text field keeps focus so DataWedge can type into it. The on-screen keyboard stays hidden (`inputmode="none"`).
 - A scan is complete on Enter or Tab, or after a short pause (about 250 ms) if DataWedge sends neither. `scan-test.html` already does this.
-- Scanning a cabinet label opens that cabinet's screen.
-- Scan while on a cabinet screen: if it's the same cabinet, nothing happens. If it's a different cabinet, ask before leaving the current one.
+- Scans are only taken on the Scanner screen (cabinet select). Scanning a cabinet label there opens that cabinet's screen.
+- A scan on any other screen, including the cabinet screen and full-screen photos, is ignored (decided 19 Nov 2026). The hidden scan field only needs focus on the Scanner screen.
 
 ## Data model
 
