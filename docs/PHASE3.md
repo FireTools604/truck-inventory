@@ -1,6 +1,8 @@
 # Phase 3 – UI refinement: work list
 
-Phase 3 in `docs/SPEC.md`. This file is the running list of changes.
+**Phase 3 done 19 Nov 2026. Signed off by Allan.** This file is now a record of the batches. Open items carried into phases 4 and 5 are in `docs/SPEC.md` under Build phases.
+
+Phase 3 in `docs/SPEC.md`.
 
 **How it runs**
 
@@ -24,7 +26,7 @@ Done 18 Nov 2026. Tested on the tablet by Allan (PR #8, cache fix PR #9, app ver
 
 ## Batch 2 – photos
 
-Done 19 Nov 2026. Tested on the tablet by Allan (PR #11, app version 2026-11-19a). Photos from Allan: 19 of S1, cabinets L1, L2, R1 and R2.
+Done 19 Nov 2026. Tested on the tablet by Allan (PR #11, app version 2026-11-19a). Photos from Allan: 19 sample photos from several trucks, loaded as S1's L1, L2, R1 and R2. S1's own photos come with the real data.
 
 - [x] Load real photos into the test data. L1, L2, R1 and R2 in both sets. Checked in the photo strip, portrait and landscape, in a desktop browser at tablet size.
 - [x] Set a size limit for photos: JPEG, longest side 1600 px, under 300 KB. In `docs/SPEC.md`; feeds the phase 5 photo rules.
@@ -34,16 +36,18 @@ Done 19 Nov 2026. Tested on the tablet by Allan (PR #11, app version 2026-11-19a
 
 ## Batch 3 – look and feel
 
-Built 19 Nov 2026 (app version 2026-11-19b). Tablet test pending. Decided 19 Nov 2026: match the SCBA tracker's look only. No link between the apps.
+Done 19 Nov 2026. Tested on the tablet by Allan (PR #13, app version 2026-11-19b). Decided 19 Nov 2026: match the SCBA tracker's look only. No link between the apps. Cosmetic changes may be revisited once the project is done.
 
 - [x] Colours and colour scheme: SCBA tracker palette (dark, red accent). Green, amber and red status colours from the same palette.
 - [x] Button shapes and sizes: SCBA rounded buttons, red primary buttons in Bebas Neue. Kept at 48 px or more for the tablet.
 - [x] Overall look, matched to the SCBA tracker: header with red logo tile, Start screen title block, uppercase section labels, cards. Fonts stored in `fonts/`, not loaded from Google.
-- [ ] Tablet test and merge. Check readability in the bay lighting and at arm's length.
+- [x] Tablet test and merge.
 
 ## Backlog
 
-- [ ] Real minimums and restock points per item, once S1's items are known.
-- [ ] Portrait or landscape at the truck (spec open item).
-- [ ] For phase 4: scans only count on the Scanner screen (decided 19 Nov 2026). Test that a stray scan on the cabinet screen or a full-screen photo does nothing, and that the scan field has focus again on returning to the Scanner screen.
-- [ ] For phase 5: photo rules say landscape, but tall cabinets (L1, R2) were taken portrait and look narrow in the strip. Settle portrait or landscape per cabinet type.
+Closed with phase 3. Nothing left open here.
+
+- [x] Portrait or landscape at the truck: portrait (19 Nov 2026). In `docs/SPEC.md`.
+- Moved to `docs/SPEC.md`, phase 4: scans only on the Scanner screen, stray-scan test, scan field focus.
+- Moved to `docs/SPEC.md`, phase 5: portrait or landscape photos; real minimums and restock points.
+- Later, after the project: cosmetic changes to the look.
